@@ -341,7 +341,9 @@
           if (assigned[pt.id] && pt.id !== currentId && !feederIds[pt.id]) return;
           var opt = document.createElement('option');
           opt.value = pt.id;
-          opt.textContent = (pt.name || '') + (pt.hc ? ' ' + pt.hc : '');
+          // show only name in dropdown; HC will be displayed as badge in card
+          opt.textContent = (pt.name || '');
+          if (pt.hc) opt.dataset.hc = pt.hc;
           if (pt.id === currentId) opt.selected = true;
           sel.appendChild(opt);
         });
@@ -360,10 +362,10 @@
                 if (sel.querySelector('option[value="' + id + '"]')) return;
                 var opt = document.createElement('option');
                 opt.value = id;
-                opt.textContent = (p.name || '') + (p.hc ? ' ' + p.hc : '');
+                opt.textContent = (p.name || '');
                 // mark selected if matches currentId (fallback)
                 if (id === currentId) opt.selected = true;
-                // attach data to recover name later
+                // attach data to recover name and hc later
                 opt.dataset.feedName = p.name || '';
                 opt.dataset.feedHc = p.hc || '';
                 sel.appendChild(opt);
