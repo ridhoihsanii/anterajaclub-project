@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="BILPOS - Professional Billiard Tournament Management System by Billiard Positif"/>
+  <meta name="theme-color" content="#0A0A0A"/>
+  <title>BILPOS — Billiard Positif Tournament System</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/bracket.css">
+</head>
+<body>
+  <div class="bilpos-app">
+    <header class="bilpos-header">
+      <a class="header-brand" href="#">
+        <span class="brand-icon">🏆</span>
+        <div>
+          <div>BILLIARD POSITIF</div>
+          <span class="brand-sub">BILPOS TOURNAMENT</span>
+        </div>
+      </a>
+      <div class="header-center">
+        <nav class="top-taskbar">
+          <div class="sidebar-nav-item" data-section="dashboard">Dashboard</div>
+          <div class="sidebar-nav-item" data-section="setup">Tournament Setup</div>
+          <div class="sidebar-nav-item" data-section="participants">List Peserta Bilpos</div>
+          <div class="sidebar-nav-item" data-section="bracket">Tournament Bracket</div>
+          <div class="sidebar-nav-item" data-section="wheel">Drawing</div>
+        </nav>
+      </div>
+      <div class="header-actions">
+      </div>
+    </header>
+
+    <main class="bilpos-main" id="bilpos-main">
+      <div id="toast-container"></div>
+
+      <section class="bilpos-section active" id="section-dashboard">
+        <div class="section-header">
+          <div class="section-title">
+            <i class="fas fa-th-large"></i>
+            Dashboard
+          </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-md-3">
+              <div class="stat-card">
+                <div class="stat-icon green"><i class="fas fa-money-bill-wave"></i></div>
+                <div class="stat-content">
+                  <div class="stat-label">BAYAR CASH</div>
+                  <div class="stat-value"><span id="stat-bayar-cash">0</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="stat-card">
+                <div class="stat-icon blue"><i class="fas fa-exchange-alt"></i></div>
+                <div class="stat-content">
+                  <div class="stat-label">TRANSFER</div>
+                  <div class="stat-value"><span id="stat-transfer">0</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="stat-card">
+                <div class="stat-icon yellow"><i class="fas fa-wallet"></i></div>
+                <div class="stat-content">
+                  <div class="stat-label">TOTAL BAYAR</div>
+                  <div class="stat-value"><span id="stat-total-bayar">0</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="stat-card">
+                <div class="stat-icon red"><i class="fas fa-clock"></i></div>
+                <div class="stat-content">
+                  <div class="stat-label">BELUM BAYAR</div>
+                  <div class="stat-value"><span id="stat-belum-bayar">0</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+      </section>
+
+      <section class="bilpos-section" id="section-setup">
+        <div class="section-header">
+          <div class="section-title">
+            <i class="fas fa-cog"></i>
+            Tournament Setup
+          </div>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-lg-6">
+            <div class="bilpos-card">
+              <div class="card-header-bilpos">
+                <div class="card-icon"><i class="fas fa-trophy"></i></div>
+                <h5>Setup Tournament</h5>
+              </div>
+              <div class="bilpos-form-group">
+                <label class="bilpos-label" for="input-size">Ukuran Tournament</label>
+                <select class="bilpos-select" id="input-size">
+                  <option value="16">16 Players</option>
+                  <option value="32" selected>32 Players</option>
+                  <option value="48">48 Players</option>
+                  <option value="64">64 Players</option>
+                  <option value="96">96 Players</option>
+                  <option value="128">128 Players</option>
+                </select>
+              </div>
+              <div class="d-flex gap-2 mt-3">
+                <button class="btn-bilpos-secondary" id="btn-generate-bracket">
+                  <i class="fas fa-sitemap me-1"></i> Generate Bracket
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="bilpos-card">
+              <div class="card-header-bilpos">
+                <div class="card-icon"><i class="fas fa-wallet"></i></div>
+                <h5>Biaya Pendaftaran</h5>
+              </div>
+              <div class="bilpos-form-group" style="margin:16px">
+                <label class="bilpos-label" for="input-fee">Biaya Pendaftaran (Rupiah)</label>
+                <input type="number" min="0" step="1000" class="bilpos-input" id="input-fee" placeholder="0" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="bilpos-section" id="section-participants">
+        <div class="section-header">
+          <div class="section-title">
+            <i class="fas fa-users"></i>
+            List Peserta BILPOS
+          </div>
+        </div>
+
+        <div class="table-controls mb-3">
+          <div class="search-input-wrapper">
+            <i class="fas fa-search"></i>
+            <input type="text" class="search-input" id="participant-search" placeholder="Cari nama..."/>
+          </div>
+          <div style="flex:1"></div>
+          <button class="btn-export btn-export-pdf" id="btn-delete-all">
+            <i class="fas fa-trash-alt me-1"></i> Hapus Semua Peserta
+          </button>
+        </div>
+
+        <div class="bilpos-card p-0">
+          <div class="participant-scroll-wrapper">
+            <table class="participant-table" id="participant-table">
+              <thead>
+                <tr>
+                  <th style="width:36px">#</th>
+                  <th style="width:130px">PEMBAYARAN</th>
+                  
+                  <th>NAMA PESERTA</th>
+                  <th style="width:130px">HC</th>
+                  <th style="width:80px">-</th>
+                </tr>
+              </thead>
+              <tbody id="participant-tbody">
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="bilpos-section bracket-section" id="section-bracket">
+        <div class="section-header">
+          <div class="section-title">
+            <i class="fas fa-sitemap"></i>
+            Tournament Bracket
+          </div>
+        </div>
+
+        <div class="bracket-controls" style="margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;color:var(--text-muted);font-weight:600">
+          <div>Bracket (Editable)</div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="display:flex;align-items:center;gap:8px;color:var(--text-secondary);font-weight:600">
+              <label for="zoom-range" style="font-size:0.85rem">Zoom</label>
+              <input id="zoom-range" type="range" min="65" max="100" value="100" style="width:160px" />
+              <span id="zoom-value" style="min-width:48px;text-align:right;color:var(--text-primary);font-weight:700">100%</span>
+            </div>
+            <button class="btn-bilpos-secondary" id="btn-fullscreen-bracket"><i class="fas fa-expand me-1"></i> Full Screen</button>
+          </div>
+        </div>
+
+        <div class="bracket-container" id="bracket-container">
+          <div id="bracket-render-area">
+            <div id="bracket-react-root"></div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- Embedded Drawing Wheel (bottom of page) -->
+      <section class="bilpos-section" id="section-wheel">
+        <div class="section-header">
+          <div class="section-title"><i class="fas fa-dice"></i> Drawing</div>
+        </div>
+        <div class="wheel-panel" style="margin:8px 0 24px;">
+          <div class="wheel-body">
+            <canvas id="wheel-canvas" width="600" height="600"></canvas>
+            <button id="btn-spin-wheel" class="wheel-spin-btn" title="Spin">SPIN</button>
+          </div>
+          <div class="wheel-controls">
+            <!-- removed individual remove button; use popup Hapus instead -->
+          </div>
+        </div>
+      </section>
+
+          <!-- Result modal -->
+          <div id="wheel-result-modal" class="wheel-result-modal">
+            <div class="wheel-result-panel">
+              <div class="wheel-result-header">Kita punya pemenang!</div>
+              <div class="wheel-result-body">
+                <div class="result-number" style="font-size:48px;font-weight:800;color:#fff;text-align:center">0</div>
+              </div>
+              <div class="wheel-result-actions">
+                <button id="btn-close-result" class="btn-bilpos-secondary">Tutup</button>
+                <button id="btn-delete-result" class="btn-bilpos-primary">Hapus</button>
+              </div>
+            </div>
+          </div>
+
+      <footer class="bilpos-footer mt-4">
+        Built with <span class="heart">❤️</span> by <span>Ihsan</span>
+      </footer>
+    </main>
+  </div>
+
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script type="text/babel">
+  // Embedded Bracket React component (development/demo only)
+  const { useState, useEffect } = React;
+
+  function ParticipantSelector({ pool, value, onSelect, onRemove }) {
+    return (
+      <div className="selector">
+        <select value={value??""} onChange={e => onSelect(e.target.value || null)}>
+          <option value="">-- pilih peserta --</option>
+          {pool.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+        </select>
+        {value && <button className="remove" onClick={onRemove}>×</button>}
+      </div>
+    );
+  }
+
+  function Bracket(props) {
+    const { participants = [], initialMatches = [], onChange } = props || {};
+    const [matches, setMatches] = useState(() => {
+      if (initialMatches.length) return initialMatches;
+      const players = Math.max(1, participants.length);
+      let slots = 1; while (slots < players) slots <<= 1;
+      const totalMatches = slots - 1;
+      const rounds = Math.log2(slots);
+      const matchesPerRound = Array.from({ length: rounds }, (_, r) => slots / Math.pow(2, r + 1));
+      const roundBases = []; let acc = 0;
+      for (let r = 0; r < matchesPerRound.length; r++) { roundBases.push(acc); acc += matchesPerRound[r]; }
+      const out = Array.from({ length: totalMatches }, (_, i) => ({ id: i, slot1Id: null, slot2Id: null, slot1Score: null, slot2Score: null, startTime: null, live: false }));
+      let pi = 0; const firstRoundBase = roundBases[0];
+      for (let m = 0; m < matchesPerRound[0]; m++) {
+        const idx = firstRoundBase + m;
+        if (pi < participants.length) out[idx].slot1Id = participants[pi++].id;
+        if (pi < participants.length) out[idx].slot2Id = participants[pi++].id;
+      }
+      return out;
+    });
+
+    const [pool, setPool] = useState(participants.map(p => ({...p})));
+
+    useEffect(() => {
+      const selected = new Set(matches.flatMap(m => [m.slot1Id, m.slot2Id].filter(Boolean)));
+      setPool(participants.filter(p => !selected.has(p.id)));
+    }, [participants, matches]);
+
+    useEffect(() => {
+      if (initialMatches.length) return;
+      const players = Math.max(1, participants.length);
+      let slots = 1; while (slots < players) slots <<= 1;
+      const totalMatches = slots - 1;
+      const rounds = Math.log2(slots);
+      const matchesPerRound = Array.from({ length: rounds }, (_, r) => slots / Math.pow(2, r + 1));
+      const roundBases = []; let acc = 0;
+      for (let r = 0; r < matchesPerRound.length; r++) { roundBases.push(acc); acc += matchesPerRound[r]; }
+      const out = Array.from({ length: totalMatches }, (_, i) => ({ id: i, slot1Id: null, slot2Id: null, slot1Score: null, slot2Score: null, startTime: null, live: false }));
+      let pi = 0; const firstRoundBase = roundBases[0];
+      for (let m = 0; m < matchesPerRound[0]; m++) {
+        const idx = firstRoundBase + m;
+        if (pi < participants.length) out[idx].slot1Id = participants[pi++].id;
+        if (pi < participants.length) out[idx].slot2Id = participants[pi++].id;
+      }
+      setMatches(out);
+    }, [participants]);
+
+    const updateMatch = (idx, patch) => {
+      setMatches(prev => { const next = prev.map(m => ({...m})); next[idx] = {...next[idx], ...patch}; return next; });
+      if (onChange) onChange({...matches[idx], ...patch});
+    };
+
+    const onSelect = (matchIdx, slot, participantId) => { const key = slot === 1 ? "slot1Id" : "slot2Id"; updateMatch(matchIdx, {[key]: participantId}); };
+    const onRemove = (matchIdx, slot) => { const key = slot === 1 ? "slot1Id" : "slot2Id"; updateMatch(matchIdx, {[key]: null, [slot===1?"slot1Score":"slot2Score"]: null}); };
+    const setScore = (matchIdx, slot, value) => { const key = slot === 1 ? "slot1Score" : "slot2Score"; updateMatch(matchIdx, {[key]: value}); setTimeout(() => resolveWinner(matchIdx), 0); };
+
+    function resolveWinner(matchIdx) {
+      const m = matches[matchIdx]; if (!m) return; const a = m.slot1Score; const b = m.slot2Score; if (a == null || b == null) return; if (a === b) return; const winnerId = a > b ? m.slot1Id : m.slot2Id; if (!winnerId) return;
+      const totalMatches = matches.length; const totalSlots = totalMatches + 1; const rounds = Math.log2(totalSlots);
+      const matchesPerRound = Array.from({ length: rounds }, (_, r) => totalSlots / Math.pow(2, r + 1)); const roundBases = []; let acc = 0; for (let r = 0; r < matchesPerRound.length; r++) { roundBases.push(acc); acc += matchesPerRound[r]; }
+      let roundIdx = null; for (let r = 0; r < roundBases.length; r++) { const base = roundBases[r]; const size = matchesPerRound[r]; if (matchIdx >= base && matchIdx < base + size) { roundIdx = r; break; } }
+      if (roundIdx === null) return; const nextRound = roundIdx + 1; if (nextRound >= roundBases.length) return; const parent = roundBases[nextRound] + Math.floor((matchIdx - roundBases[roundIdx]) / 2);
+      if (parent != null && parent < matches.length) {
+        setMatches(prev => { const next = prev.map(x => ({...x})); const parentMatch = next[parent]; if (!parentMatch.slot1Id) parentMatch.slot1Id = winnerId; else if (!parentMatch.slot2Id) parentMatch.slot2Id = winnerId; return next; });
+      }
+    }
+
+    const toggleLive = idx => updateMatch(idx, {live: !matches[idx].live});
+    const isWinner = m => { if (m.slot1Score == null || m.slot2Score == null) return null; if (m.slot1Score === m.slot2Score) return null; return m.slot1Score > m.slot2Score ? 1 : 2; };
+
+    return (
+      <div className="bracket-root">
+        {matches.map((m, i) => {
+          const winner = isWinner(m);
+          return (
+            <div key={m.id} className={`match-card ${m.live ? "live" : ""}`}>
+              <div className="match-controls"><button className="live-btn" onClick={() => toggleLive(i)}>LIVE</button></div>
+              <div className={`slot ${winner===1? "winner": winner===2? "loser": ""}`}>
+                <ParticipantSelector pool={[...pool, ...(m.slot1Id ? participants.filter(p=>p.id===m.slot1Id):[])]} value={m.slot1Id} onSelect={id => onSelect(i,1,id)} onRemove={() => onRemove(i,1)} participants={participants} />
+                <input type="number" className="score-input" value={m.slot1Score ?? ""} onChange={e=>setScore(i,1, e.target.value === "" ? null : Number(e.target.value))} />
+                <span className={`badge ${winner===1?"win": winner===2?"lose":""}`}>{winner===1?"WIN": winner===2?"LOSE":""}</span>
+              </div>
+              <div className={`slot ${winner===2? "winner": winner===1? "loser": ""}`}>
+                <ParticipantSelector pool={[...pool, ...(m.slot2Id ? participants.filter(p=>p.id===m.slot2Id):[])]} value={m.slot2Id} onSelect={id => onSelect(i,2,id)} onRemove={() => onRemove(i,2)} participants={participants} />
+                <input type="number" className="score-input" value={m.slot2Score ?? ""} onChange={e=>setScore(i,2, e.target.value === "" ? null : Number(e.target.value))} />
+                <span className={`badge ${winner===2?"win": winner===1?"lose":""}`}>{winner===2?"WIN": winner===1?"LOSE":""}</span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
+  (function mountBracket(){
+    const participants = (window.BilposStorage && window.BilposStorage.loadParticipants()) || [];
+    const root = document.getElementById('bracket-react-root');
+    if (root) {
+      ReactDOM.createRoot(root).render(<Bracket participants={participants} />);
+    }
+  })();
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="assets/js/storage.js"></script>
+  <script src="assets/js/drawing.js"></script>
+  <script src="assets/js/tournament.js"></script>
+  <script src="assets/js/bracket.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/wheel.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
