@@ -68,12 +68,11 @@ bilpos-project/
 
 ### GitHub Pages
 
-1. Push the project to a GitHub repository.
-2. Go to **Settings** → **Pages**.
-3. Set **Source** to **Deploy from branch** → **main** → **/ (root)**.
-4. Click **Save** and wait about 1 minute.
-5. Access the app at: `https://yourusername.github.io/bilpos-project/`
+This repository includes an automated GitHub Actions workflow that builds and deploys the site to GitHub Pages on every push to `main`.
 
+1. Push the project to a GitHub repository (already done).
+2. Workflow will run and publish to Pages. The site is expected at `https://<your-username>.github.io/bilpos-project/`.
+3. If Pages shows 404, wait ~1–2 minutes for provisioning, or check Actions → Workflows for build logs.
 ## Usage Guide
 
 - **Dashboard**: Overview of tournament stats.
