@@ -83,7 +83,7 @@ test.describe('React Bracket Module', () => {
     await page.click('[data-section="bracket"]');
     await page.waitForSelector('.live-btn', { timeout: 8000 });
     await page.locator('.live-btn').first().click();
-    await expect(page.locator('.match-card.live').first()).toBeVisible();
+    await expect(page.locator('.match-card.is-live').first()).toBeVisible();
   });
 
   test('only one match is live at a time', async ({ page }) => {
@@ -92,7 +92,7 @@ test.describe('React Bracket Module', () => {
     await page.waitForSelector('.live-btn', { timeout: 8000 });
     await page.locator('.live-btn').nth(0).click();
     await page.locator('.live-btn').nth(1).click();
-    const liveCount = await page.locator('.match-card.live').count();
+    const liveCount = await page.locator('.match-card.is-live').count();
     expect(liveCount).toBe(1);
   });
 
@@ -102,9 +102,9 @@ test.describe('React Bracket Module', () => {
     await page.waitForSelector('.live-btn', { timeout: 8000 });
     const btn = page.locator('.live-btn').first();
     await btn.click(); // activate
-    await expect(page.locator('.match-card.live').first()).toBeVisible();
+    await expect(page.locator('.match-card.is-live').first()).toBeVisible();
     await btn.click(); // deactivate
-    const liveCount = await page.locator('.match-card.live').count();
+    const liveCount = await page.locator('.match-card.is-live').count();
     expect(liveCount).toBe(0);
   });
 
@@ -135,13 +135,13 @@ test.describe('React Bracket Module', () => {
 
     // Activate LIVE on first match
     await page.locator('.live-btn').first().click();
-    await expect(page.locator('.match-card.live').first()).toBeVisible();
+    await expect(page.locator('.match-card.is-live').first()).toBeVisible();
 
     // Reload
     await page.reload();
     await page.click('[data-section="bracket"]');
-    await page.waitForSelector('.match-card.live', { timeout: 8000 });
-    const liveCount = await page.locator('.match-card.live').count();
+    await page.waitForSelector('.match-card.is-live', { timeout: 8000 });
+    const liveCount = await page.locator('.match-card.is-live').count();
     expect(liveCount).toBe(1);
   });
 
@@ -151,5 +151,38 @@ test.describe('React Bracket Module', () => {
     await page.waitForSelector('.round-column', { timeout: 10000 });
     const count = await page.locator('.round-column').count();
     expect(count).toBe(7); // log2(128) = 7 rounds
+  });
+
+  test('shows empty state when tournament is not configured', async ({ page }) => {
+    await page.goto('/index.html');
+    await page.evaluate(function() {
+      // size: 1 causes generateBracket to return empty rounds, triggering the empty state
+      localStorage.setItem('bilpos_tournament', JSON.stringify({ size: 1 }));
+      localStorage.removeItem('bilpos_participants');
+      localStorage.removeItem('bilpos_bracket');
+    });
+    await page.reload();
+    await page.click('[data-section="bracket"]');
+    await expect(page.locator('.bracket-empty')).toBeVisible({ timeout: 8000 });
+  });
+
+  test('winner advances to Round 2 slot as static name', async ({ page }) => {
+    await setupBracket(page, 16);
+    await page.click('[data-section="bracket"]');
+    await page.waitForSelector('.score-input', { timeout: 8000 });
+
+    // First match already has Player 1 (p1) and Player 2 (p2) from generateBracket.
+    // Enter scores: Player 1 = 7, Player 2 = 3 → Player 1 wins.
+    const inputs = page.locator('.score-input');
+    await inputs.nth(0).fill('7');
+    await inputs.nth(1).fill('3');
+    await page.waitForTimeout(400);
+
+    // Round 2 first match p1 slot should show Player 1 as a static label (not a dropdown).
+    const round2Column = page.locator('.round-column').nth(1);
+    const winnerLabel = round2Column.locator('.participant-name, .participant-label:not(.tbd)').first();
+    await expect(winnerLabel).toBeVisible({ timeout: 5000 });
+    const text = await winnerLabel.textContent();
+    expect(text).toContain('Player 1');
   });
 });

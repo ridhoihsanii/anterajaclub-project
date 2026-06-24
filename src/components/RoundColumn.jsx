@@ -64,7 +64,7 @@ export default function RoundColumn({
               isFirstRound={isFirstRound}
               participants={participants}
               usedParticipantIds={usedParticipantIds}
-              isLive={match.id === liveMatchId}
+              liveMatchId={liveMatchId}
               onScoreChange={onScoreChange}
               onSelectParticipant={onSelectParticipant}
               onToggleLive={onToggleLive}

@@ -5,9 +5,10 @@ import ScoreInput from './ScoreInput';
 export default function MatchCard({
   match, matchNum, roundIdx, matchIdx,
   participants, usedParticipantIds,
-  isLive, onScoreChange, onSelectParticipant, onToggleLive,
+  liveMatchId, onScoreChange, onSelectParticipant, onToggleLive,
 }) {
   const isFirstRound = roundIdx === 0;
+  const isLive = match.id === liveMatchId;
   var winner    = match.winner;
   var p1IsWin   = winner && match.p1 && String(winner.id) === String(match.p1.id);
   var p2IsWin   = winner && match.p2 && String(winner.id) === String(match.p2.id);
@@ -18,7 +19,7 @@ export default function MatchCard({
   var isByeMatch = p1IsBye || p2IsBye;
 
   return (
-    <div className={'match-card' + (isLive ? ' live' : '')}>
+    <div className={'match-card' + (isLive ? ' is-live' : '')}>
 
       {/* Header */}
       <div className="match-header">
