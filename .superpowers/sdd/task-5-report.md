@@ -75,3 +75,40 @@ The implementation follows the exact specifications from task-5-brief.md:
 - ✅ Match number offsets correctly computed
 - ✅ Build completes successfully
 - ✅ Git commit created successfully
+
+---
+
+## FIX 1 (Fixes Applied)
+
+### Fixes Applied
+✅ **Fix 1:** Added `.bracket-scroll-container` wrapper in BracketView
+- BracketView return statement now wraps `<div className="bracket-view">` inside `<div className="bracket-scroll-container">`
+
+✅ **Fix 2:** BracketView now accepts and passes usedParticipantIds + roundLabels
+- Added `usedParticipantIds` and `roundLabels` to the destructured props
+- Removed internal `usedInRound1` memoized computation
+- Removed unused `useMemo` import
+- Pass `usedParticipantIds` down to `<RoundColumn>` as `usedParticipantIds={usedParticipantIds}`
+- Pass `roundLabels[roundIdx]` down to `<RoundColumn>` as `roundLabel={roundLabels && roundLabels[roundIdx]}`
+
+✅ **Fix 3:** RoundColumn accepts `roundLabel` and renamed `usedInRound1` to `usedParticipantIds`
+- Added `roundLabel` and `usedParticipantIds` to destructured props
+- Renamed `usedInRound1` → `usedParticipantIds` in function signature
+- Created `displayLabel` variable that uses `roundLabel` with fallback to computed `getRoundLabel()`
+- Use `displayLabel` in the round header JSX
+- Renamed all internal uses of `usedInRound1` to `usedParticipantIds`
+- Pass `usedParticipantIds` down to `<MatchCard>` as `usedParticipantIds={usedParticipantIds}`
+
+### Build Status
+✅ **Build: PASSED** (exit code 0)
+- esbuild completed successfully
+- Bundle output: 450.1kb (minified)
+- Build time: 673ms
+
+### Git Commit
+✅ **Committed:** `970e149438da3470f90ca6e4a2b25c31f17b1386`
+- Message: "fix: BracketView/RoundColumn - scroll container, accept usedParticipantIds, roundLabel props"
+- Files changed: 11 (includes build artifacts and task tracking files)
+
+### Result
+**Status: DONE**
