@@ -4,9 +4,10 @@ import ScoreInput from './ScoreInput';
 
 export default function MatchCard({
   match, matchNum, roundIdx, matchIdx,
-  isFirstRound, participants, usedParticipantIds,
+  participants, usedParticipantIds,
   liveMatchId, onScoreChange, onSelectParticipant, onToggleLive,
 }) {
+  const isFirstRound = roundIdx === 0;
   const isLive = match.id === liveMatchId;
   var winner    = match.winner;
   var p1IsWin   = winner && match.p1 && String(winner.id) === String(match.p1.id);
