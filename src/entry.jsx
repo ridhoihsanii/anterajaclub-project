@@ -1,21 +1,31 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import Bracket from './components/Bracket';
+import BracketPage from './components/BracketPage';
 
-function mount() {
-  const participants = (window.BilposStorage && window.BilposStorage.loadParticipants()) || [];
-  const rootEl = document.getElementById('bracket-react-root');
+var _root = null;
+
+function mountBracket() {
+  var rootEl = document.getElementById('bracket-react-root');
   if (!rootEl) return;
-  try {
-    const root = createRoot(rootEl);
-    root.render(<Bracket participants={participants} />);
-  } catch (err) {
-    console.error('Failed to mount Bracket', err);
+  if (!_root) {
+    _root = createRoot(rootEl);
   }
+  _root.render(React.createElement(BracketPage));
 }
 
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', mount);
+  document.addEventListener('DOMContentLoaded', mountBracket);
 } else {
-  mount();
+  mountBracket();
 }
+
+// Fire bilpos:bracket-activated when the Bracket nav tab is clicked so
+// BracketPage can re-read fresh participant data from BilposStorage.
+document.addEventListener('DOMContentLoaded', function() {
+  var navItem = document.querySelector('.sidebar-nav-item[data-section="bracket"]');
+  if (navItem) {
+    navItem.addEventListener('click', function() {
+      window.dispatchEvent(new CustomEvent('bilpos:bracket-activated'));
+    });
+  }
+});

@@ -8,7 +8,7 @@
     "test": "tests"
   },
   "scripts": {
-    "build": "esbuild src/entry.jsx --bundle --outfile=assets/js/bracket.bundle.js --loader:.js=jsx --define:process.env.NODE_ENV=\"production\" --minify --sourcemap",
+    "build": "esbuild src/entry.jsx --bundle --outfile=assets/js/bracket.bundle.js --loader:.js=jsx --define:process.env.NODE_ENV=\\\"production\\\" --minify --sourcemap",
     "start": "http-server -c-1"
   },
   "keywords": [],
