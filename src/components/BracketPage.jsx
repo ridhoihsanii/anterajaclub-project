@@ -161,12 +161,19 @@ export default function BracketPage() {
   }
 
   const usedParticipantIds = new Set(
-    (state.bracket?.rounds?.[0] ?? []).flatMap(m => [m.p1, m.p2]).filter(Boolean)
+    (state.bracket?.rounds?.[0] ?? [])
+      .flatMap(m => [m.p1, m.p2])
+      .filter(Boolean)
+      .map(p => String(p.id))
   );
 
   const rounds = state.bracket?.rounds ?? [];
   const totalRounds = rounds.length;
-  const roundLabels = rounds.map((_, i) => window.BilposTournament.getRoundLabel(i, totalRounds));
+  const roundLabels = rounds.map((_, i) =>
+    window.BilposTournament
+      ? window.BilposTournament.getRoundLabel(i, totalRounds)
+      : String(i + 1)
+  );
 
   return (
     <BracketView
