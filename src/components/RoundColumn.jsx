@@ -22,17 +22,18 @@ function getMatchNumOffset(roundIdx, totalRounds) {
 }
 
 export default function RoundColumn({
-  round, roundIdx, totalRounds, participants, usedInRound1,
+  round, roundIdx, totalRounds, participants, usedParticipantIds, roundLabel,
   liveMatchId, onScoreChange, onSelectParticipant, onToggleLive,
 }) {
   var isFirstRound = roundIdx === 0;
   var isFinalRound = roundIdx === totalRounds - 1;
   var connectorH   = computeConnectorHeight(roundIdx);
   var matchOffset  = getMatchNumOffset(roundIdx, totalRounds);
+  var displayLabel = roundLabel || getRoundLabel(roundIdx, totalRounds);
 
   return (
     <div className="round-column">
-      <div className="round-label">{getRoundLabel(roundIdx, totalRounds)}</div>
+      <div className="round-label">{displayLabel}</div>
 
       {round.map(function(match, matchIdx) {
         var margins       = computeMatchMargins(roundIdx, matchIdx);
@@ -62,7 +63,7 @@ export default function RoundColumn({
               matchIdx={matchIdx}
               isFirstRound={isFirstRound}
               participants={participants}
-              usedInRound1={usedInRound1}
+              usedParticipantIds={usedParticipantIds}
               isLive={match.id === liveMatchId}
               onScoreChange={onScoreChange}
               onSelectParticipant={onSelectParticipant}
