@@ -119,6 +119,7 @@ export default function BracketPage() {
   }, [saveState]);
 
   var handleSelectParticipant = useCallback(function(roundIdx, matchIdx, slot, participantId) {
+    if (roundIdx !== 0) return;
     setState(function(prev) {
       var newBracket  = deepClone(prev.bracket);
       var key         = slot === 1 ? 'p1' : 'p2';
@@ -126,12 +127,16 @@ export default function BracketPage() {
         ? (prev.participants.find(function(p) { return String(p.id) === String(participantId); }) || null)
         : null;
 
-      var match   = newBracket.rounds[roundIdx][matchIdx];
-      match[key]  = participant;
-      match.score1 = '';
-      match.score2 = '';
-      match.winner = null;
-      match.status = 'pending';
+      var match      = newBracket.rounds[roundIdx][matchIdx];
+      var prevWinner = match.winner;
+      match[key]     = participant;
+      match.score1   = '';
+      match.score2   = '';
+      match.winner   = null;
+      match.status   = 'pending';
+      if (prevWinner) {
+        cascadeClearWinnerMut(newBracket, roundIdx, matchIdx);
+      }
 
       saveState(newBracket, prev.liveMatchId);
       return { bracket: newBracket, liveMatchId: prev.liveMatchId, participants: prev.participants };
@@ -155,6 +160,14 @@ export default function BracketPage() {
     );
   }
 
+  const usedParticipantIds = new Set(
+    (state.bracket?.rounds?.[0] ?? []).flatMap(m => [m.p1, m.p2]).filter(Boolean)
+  );
+
+  const rounds = state.bracket?.rounds ?? [];
+  const totalRounds = rounds.length;
+  const roundLabels = rounds.map((_, i) => window.BilposTournament.getRoundLabel(i, totalRounds));
+
   return (
     <BracketView
       bracket={state.bracket}
@@ -163,6 +176,8 @@ export default function BracketPage() {
       onScoreChange={handleScoreChange}
       onSelectParticipant={handleSelectParticipant}
       onToggleLive={handleToggleLive}
+      usedParticipantIds={usedParticipantIds}
+      roundLabels={roundLabels}
     />
   );
 }
