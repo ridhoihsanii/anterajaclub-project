@@ -42,10 +42,24 @@ function loadInitialState() {
   var size = parseInt(tournament_.size, 10) || 32;
 
   if (saved && saved.bracket && saved.bracket.size === size) {
-    bracket     = saved.bracket;
-    liveMatchId = saved.liveMatchId || null;
+    // If all round-0 slots are BYE/null, regenerate so new drawingNumber mapping applies
+    var round0 = saved.bracket.rounds && saved.bracket.rounds[0];
+    var allBye = round0 && round0.every(function(m) {
+      return (!m.p1 || !m.p1.id) && (!m.p2 || !m.p2.id);
+    });
+    if (!allBye) {
+      bracket     = saved.bracket;
+      liveMatchId = saved.liveMatchId || null;
+    }
   } else {
-    var filtered = participants.filter(function(p) { return p && p.name && p.name.trim(); });
+    var filtered = participants
+      .filter(function(p) { return p && p.name && p.name.trim(); })
+      .map(function(p) {
+        // generateBracket uses drawingNumber; participant management uses slot — unify here
+        return Object.assign({}, p, {
+          drawingNumber: p.drawingNumber != null ? p.drawingNumber : p.slot
+        });
+      });
     bracket = window.BilposTournament
       ? window.BilposTournament.generateBracket(size, filtered)
       : { rounds: [], size: size, generatedAt: Date.now() };

@@ -6,10 +6,6 @@ export default function ParticipantSlot({
 }) {
   var isBye = participant && participant.name === 'BYE';
 
-  if (isBye) {
-    return <span className="participant-label bye">BYE</span>;
-  }
-
   if (isFirstRound) {
     var currentId = participant ? String(participant.id) : '';
 
@@ -37,6 +33,9 @@ export default function ParticipantSlot({
   }
 
   // Round 2+: read-only display
+  if (isBye) {
+    return <span className="participant-label bye">BYE</span>;
+  }
   if (!participant) {
     return <span className="participant-label tbd">TBD</span>;
   }
