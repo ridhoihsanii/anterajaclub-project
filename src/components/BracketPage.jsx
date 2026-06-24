@@ -109,7 +109,9 @@ export default function BracketPage() {
         }
         // Advance the new winner (or nothing if newWinner is null)
         if (newWinner && window.BilposTournament) {
-          window.BilposTournament.advanceWinner(newBracket, roundIdx, matchIdx, newWinner);
+          // Enrich winner with full participant data (preserves hcCustom)
+          var fullWinner = prev.participants.find(function(p) { return String(p.id) === String(newWinner.id); }) || newWinner;
+          window.BilposTournament.advanceWinner(newBracket, roundIdx, matchIdx, fullWinner);
         }
       }
 

@@ -31,7 +31,7 @@
   flex-shrink: 0;
   width: 260px;
   overflow: visible;
-  gap: 8px; /* = CARD_GAP */
+  gap: 0; /* spacing handled by computeMatchMargins marginTop */
 }
 
 .round-label {
@@ -225,6 +225,15 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.participant-name {
+  flex: 1;
+  font-size: 0.8rem;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .participant-label.tbd {
