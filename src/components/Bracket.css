@@ -63,7 +63,7 @@
   left: -24px; /* = -ARM_LENGTH */
   width: 24px;
   height: 2px;
-  background: rgba(55, 75, 100, 0.85);
+  background: rgba(100, 140, 180, 0.9);
   transform: translateY(-50%);
 }
 
@@ -75,8 +75,8 @@
   right: -24px; /* right edge of arm starts at card.right */
   width: 24px; /* = ARM_LENGTH */
   height: var(--connector-h, 54px);
-  border-top: 2px solid rgba(55, 75, 100, 0.85);
-  border-right: 2px solid rgba(55, 75, 100, 0.85);
+  border-top: 2px solid rgba(100, 140, 180, 0.9);
+  border-right: 2px solid rgba(100, 140, 180, 0.9);
 }
 
 /* Right arm + vertical going UP (odd match, non-final round) */
@@ -86,9 +86,9 @@
   bottom: 50%; /* card vertical center */
   right: -24px;
   width: 24px;
-  height: var(--connector-h, 54px);
-  border-bottom: 2px solid rgba(55, 75, 100, 0.85);
-  border-right: 2px solid rgba(55, 75, 100, 0.85);
+  height: calc(var(--connector-h, 54px) + 2px);
+  border-bottom: 2px solid rgba(100, 140, 180, 0.9);
+  border-right: 2px solid rgba(100, 140, 180, 0.9);
 }
 
 /* ──── Match card ─────────────────────────────────────────────── */
@@ -380,8 +380,8 @@
 [data-theme='light'] .match-wrapper.has-left-arm::before,
 [data-theme='light'] .match-wrapper.connector-top::after,
 [data-theme='light'] .match-wrapper.connector-bottom::after {
-  border-color: #cbd5e1;
-  background-color: #cbd5e1;
+  border-color: #8a9bb0;
+  background-color: #8a9bb0;
 }
 
 [data-theme='light'] .round-label {
