@@ -24,6 +24,21 @@ class FakeClassList {
   contains(token) {
     return this.items.includes(token);
   }
+
+  add(token) {
+    if (!this.items.includes(token)) {
+      this.items.push(token);
+      this._sync();
+    }
+  }
+
+  remove(token) {
+    const idx = this.items.indexOf(token);
+    if (idx !== -1) {
+      this.items.splice(idx, 1);
+      this._sync();
+    }
+  }
 }
 
 class FakeElement {
@@ -391,5 +406,31 @@ test('size change dispatches bilpos:bracket-activated event', () => {
   assert.ok(
     loaded.dispatchedEvents.includes('bilpos:bracket-activated'),
     'Expected bilpos:bracket-activated to be dispatched when size changes'
+  );
+});
+
+test('clicking bracket nav item dispatches bilpos:bracket-activated event', () => {
+  const loaded = loadApp();
+  const app = loaded.BilposApp;
+
+  app.tournament = { size: 32, fee: 0 };
+  app.renderStats = function() {};
+  app.renderParticipantTable = function() {};
+
+  // Tambah nav items ke fake DOM
+  const bracketNavItem = appendElement(loaded.document, 'div', {
+    className: 'sidebar-nav-item',
+    dataset: { section: 'bracket' }
+  });
+  appendElement(loaded.document, 'div', {
+    id: 'section-bracket'
+  });
+
+  app.wireEvents();
+  bracketNavItem.dispatchEvent('click', {});
+
+  assert.ok(
+    loaded.dispatchedEvents.includes('bilpos:bracket-activated'),
+    'Expected bilpos:bracket-activated to be dispatched when bracket nav is clicked'
   );
 });

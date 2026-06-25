@@ -251,6 +251,7 @@
           var el = document.getElementById('section-' + section);
           if (el && el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
           if (section === 'statistics') self.renderStats();
+          if (section === 'bracket') dispatchBracketActivated();
         });
       });
 
