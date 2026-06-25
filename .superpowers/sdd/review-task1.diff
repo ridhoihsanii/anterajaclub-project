@@ -1,0 +1,190 @@
+﻿a9ed1b3 fix: dispatch bilpos:bracket-activated when tournament size changes
+
+ assets/js/app.js         | 10 ++++++++++
+ tests/app-events.test.js | 35 ++++++++++++++++++++++++++++++++++-
+ 2 files changed, 44 insertions(+), 1 deletion(-)
+
+diff --git a/assets/js/app.js b/assets/js/app.js
+index b4033e7..875e26b 100644
+--- a/assets/js/app.js
++++ b/assets/js/app.js
+@@ -8,20 +8,29 @@
+       .replace(/'/g, '&#39;');
+   }
+ 
+   function getElement(id) {
+     if (typeof document === 'undefined' || !document.getElementById) {
+       return null;
+     }
+     return document.getElementById(id);
+   }
+ 
++  function dispatchBracketActivated() {
++    if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
++      var event = typeof CustomEvent === 'function'
++        ? new CustomEvent('bilpos:bracket-activated')
++        : { type: 'bilpos:bracket-activated' };
++      window.dispatchEvent(event);
++    }
++  }
++
+   function getKnownHcValue(participant) {
+     var hcValues = ['HC 3B', 'HC 3N', 'HC 3A', 'HC 3+', 'custom'];
+     var hc = participant && participant.hc != null ? String(participant.hc) : '';
+     var hcCustom = participant && participant.hcCustom != null ? String(participant.hcCustom) : '';
+     if (hc === 'custom' || hcCustom) {
+       return 'custom';
+     }
+     if (hcValues.indexOf(hc) !== -1) {
+       return hc;
+     }
+@@ -254,20 +263,21 @@
+           self.renderStats();
+         });
+       }
+ 
+       var inputSize = getElement('input-size');
+       if (inputSize) {
+         inputSize.addEventListener('change', function (e) {
+           var size = parseInt(e.target.value, 10);
+           self.tournament.size = size;
+           BilposStorage.saveTournament(self.tournament);
++          dispatchBracketActivated();
+           self.renderParticipantTable();
+           self.renderStats();
+         });
+       }
+ 
+       var participantTbody = getElement('participant-tbody');
+       if (participantTbody) {
+         participantTbody.addEventListener('click', function (e) {
+           var btn = (e.target && typeof e.target.closest === 'function') ? e.target.closest('.status-btn') : null;
+           if (!btn) return;
+diff --git a/tests/app-events.test.js b/tests/app-events.test.js
+index e4a440c..cdfe3af 100644
+--- a/tests/app-events.test.js
++++ b/tests/app-events.test.js
+@@ -194,39 +194,47 @@ function appendElement(document, tagName, config) {
+   return element;
+ }
+ 
+ function loadApp(options) {
+   const document = new FakeDocument();
+   const window = { document: document };
+   const config = options || {};
+   const toastCalls = [];
+   const savedParticipantsCalls = [];
+   const savedBracketCalls = [];
++  const dispatchedEvents = [];
+   let participants = config.participants ? config.participants.slice() : [];
+ 
++  window.addEventListener = function(eventName, handler) {};
++  window.dispatchEvent = function(event) {
++    dispatchedEvents.push(event && event.type ? event.type : String(event));
++  };
++
+   const context = {
+     window: window,
+     document: document,
+     console: console,
++    CustomEvent: function(type) { return { type: type }; },
+     BilposStorage: {
+       loadTournament: function () {
+         return { size: 2, venue: '', status: '' };
+       },
+       loadParticipants: function () {
+         return participants;
+       },
+       loadBracket: function () {
+         return config.bracket || null;
+       },
+       loadSettings: function () {
+         return { zoom: 100 };
+       },
++      saveTournament: function(data) {},
+       saveParticipants: function (nextParticipants) {
+         participants = nextParticipants;
+         savedParticipantsCalls.push(nextParticipants);
+       },
+       saveBracket: function (bracket) {
+         savedBracketCalls.push(bracket);
+       }
+     },
+     BilposDrawing: {
+       drawSlot: config.drawSlot || function () {
+@@ -239,38 +247,41 @@ function loadApp(options) {
+           bracket: bracket,
+           roundIdx: roundIdx,
+           matchIdx: matchIdx,
+           winner: winner
+         };
+       }
+     },
+     BilposUI: {
+       showToast: function (message, type) {
+         toastCalls.push({ message: message, type: type });
+-      }
++      },
++      updateHeader: function() {}
+     }
+   };
+ 
+   window.BilposStorage = context.BilposStorage;
+   window.BilposDrawing = context.BilposDrawing;
+   window.BilposTournament = context.BilposTournament;
+   window.BilposUI = context.BilposUI;
+ 
+   const appPath = path.join(process.cwd(), 'assets', 'js', 'app.js');
+   const source = fs.readFileSync(appPath, 'utf8');
+   vm.createContext(context);
+   vm.runInContext(source, context);
+ 
+   return {
+     BilposApp: context.window.BilposApp,
+     document: document,
++    window: window,
+     toastCalls: toastCalls,
++    dispatchedEvents: dispatchedEvents,
+     getSavedParticipantsCalls: function () {
+       return savedParticipantsCalls;
+     },
+     getSavedBracketCalls: function () {
+       return savedBracketCalls;
+     },
+     getParticipants: function () {
+       return participants;
+     }
+   };
+@@ -353,10 +364,32 @@ test('score change keeps partial scores live without advancing winner', () => {
+   app.renderBracket = function () {};
+   app.renderStats = function () {};
+   app.wireEvents();
+   bracketRenderArea.dispatchEvent('change', { target: scoreInput });
+ 
+   assert.equal(app.bracket.rounds[0][0].score1, '5');
+   assert.equal(app.bracket.rounds[0][0].winner, null);
+   assert.equal(app.bracket.rounds[0][0].status, 'live');
+   assert.equal(advanceCalls.length, 0);
+ });
++
++test('size change dispatches bilpos:bracket-activated event', () => {
++  const loaded = loadApp();
++  const app = loaded.BilposApp;
++
++  app.tournament = { size: 32, fee: 0 };
++  app.renderParticipantTable = function() {};
++  app.renderStats = function() {};
++
++  appendElement(loaded.document, 'input', { id: 'input-size', value: '16' });
++
++  app.wireEvents();
++
++  const sizeInput = loaded.document.getElementById('input-size');
++  sizeInput.value = '16';
++  sizeInput.dispatchEvent('change', { target: sizeInput });
++
++  assert.ok(
++    loaded.dispatchedEvents.includes('bilpos:bracket-activated'),
++    'Expected bilpos:bracket-activated to be dispatched when size changes'
++  );
++});

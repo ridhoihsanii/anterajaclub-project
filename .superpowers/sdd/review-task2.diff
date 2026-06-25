@@ -1,0 +1,109 @@
+﻿df9f8e7 fix: dispatch bilpos:bracket-activated when bracket nav tab is clicked
+
+ assets/js/app.js         |  1 +
+ tests/app-events.test.js | 41 +++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 42 insertions(+)
+
+diff --git a/assets/js/app.js b/assets/js/app.js
+index 875e26b..631e349 100644
+--- a/assets/js/app.js
++++ b/assets/js/app.js
+@@ -244,20 +244,21 @@
+       this._eventsWired = true;
+ 
+       document.querySelectorAll('.sidebar-nav-item').forEach(function (item) {
+         item.addEventListener('click', function () {
+           var section = item.dataset.section;
+           document.querySelectorAll('.sidebar-nav-item').forEach(function (it) { it.classList.remove('active'); });
+           item.classList.add('active');
+           var el = document.getElementById('section-' + section);
+           if (el && el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+           if (section === 'statistics') self.renderStats();
++          if (section === 'bracket') dispatchBracketActivated();
+         });
+       });
+ 
+       var feeInputEl = getElement('input-fee');
+       if (feeInputEl) {
+         feeInputEl.addEventListener('input', function (e) {
+           var fee = parseFloat(e.target.value) || 0;
+           self.tournament.fee = fee;
+           BilposStorage.saveTournament(self.tournament);
+           self.renderStats();
+diff --git a/tests/app-events.test.js b/tests/app-events.test.js
+index cdfe3af..fbb943c 100644
+--- a/tests/app-events.test.js
++++ b/tests/app-events.test.js
+@@ -17,20 +17,35 @@ class FakeClassList {
+   setFromString(value) {
+     this.items = String(value || '')
+       .split(/\s+/)
+       .filter(Boolean);
+     this._sync();
+   }
+ 
+   contains(token) {
+     return this.items.includes(token);
+   }
++
++  add(token) {
++    if (!this.items.includes(token)) {
++      this.items.push(token);
++      this._sync();
++    }
++  }
++
++  remove(token) {
++    const idx = this.items.indexOf(token);
++    if (idx !== -1) {
++      this.items.splice(idx, 1);
++      this._sync();
++    }
++  }
+ }
+ 
+ class FakeElement {
+   constructor(tagName, ownerDocument) {
+     this.tagName = String(tagName || 'div').toUpperCase();
+     this.ownerDocument = ownerDocument;
+     this.children = [];
+     this.parentNode = null;
+     this.dataset = {};
+     this.textContent = '';
+@@ -386,10 +401,36 @@ test('size change dispatches bilpos:bracket-activated event', () => {
+ 
+   const sizeInput = loaded.document.getElementById('input-size');
+   sizeInput.value = '16';
+   sizeInput.dispatchEvent('change', { target: sizeInput });
+ 
+   assert.ok(
+     loaded.dispatchedEvents.includes('bilpos:bracket-activated'),
+     'Expected bilpos:bracket-activated to be dispatched when size changes'
+   );
+ });
++
++test('clicking bracket nav item dispatches bilpos:bracket-activated event', () => {
++  const loaded = loadApp();
++  const app = loaded.BilposApp;
++
++  app.tournament = { size: 32, fee: 0 };
++  app.renderStats = function() {};
++  app.renderParticipantTable = function() {};
++
++  // Tambah nav items ke fake DOM
++  const bracketNavItem = appendElement(loaded.document, 'div', {
++    className: 'sidebar-nav-item',
++    dataset: { section: 'bracket' }
++  });
++  appendElement(loaded.document, 'div', {
++    id: 'section-bracket'
++  });
++
++  app.wireEvents();
++  bracketNavItem.dispatchEvent('click', {});
++
++  assert.ok(
++    loaded.dispatchedEvents.includes('bilpos:bracket-activated'),
++    'Expected bilpos:bracket-activated to be dispatched when bracket nav is clicked'
++  );
++});

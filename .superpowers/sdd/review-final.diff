@@ -1,0 +1,273 @@
+﻿df9f8e7 fix: dispatch bilpos:bracket-activated when bracket nav tab is clicked
+a9ed1b3 fix: dispatch bilpos:bracket-activated when tournament size changes
+
+ assets/js/app.js         | 11 +++++++
+ tests/app-events.test.js | 76 +++++++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 86 insertions(+), 1 deletion(-)
+
+diff --git a/assets/js/app.js b/assets/js/app.js
+index b4033e7..631e349 100644
+--- a/assets/js/app.js
++++ b/assets/js/app.js
+@@ -8,20 +8,29 @@
+       .replace(/'/g, '&#39;');
+   }
+ 
+   function getElement(id) {
+     if (typeof document === 'undefined' || !document.getElementById) {
+       return null;
+     }
+     return document.getElementById(id);
+   }
+ 
++  function dispatchBracketActivated() {
++    if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
++      var event = typeof CustomEvent === 'function'
++        ? new CustomEvent('bilpos:bracket-activated')
++        : { type: 'bilpos:bracket-activated' };
++      window.dispatchEvent(event);
++    }
++  }
++
+   function getKnownHcValue(participant) {
+     var hcValues = ['HC 3B', 'HC 3N', 'HC 3A', 'HC 3+', 'custom'];
+     var hc = participant && participant.hc != null ? String(participant.hc) : '';
+     var hcCustom = participant && participant.hcCustom != null ? String(participant.hcCustom) : '';
+     if (hc === 'custom' || hcCustom) {
+       return 'custom';
+     }
+     if (hcValues.indexOf(hc) !== -1) {
+       return hc;
+     }
+@@ -235,39 +244,41 @@
+       this._eventsWired = true;
+ 
+       document.querySelectorAll('.sidebar-nav-item').forEach(function (item) {
+         item.addEventListener('click', function () {
+           var section = item.dataset.section;
+           document.querySelectorAll('.sidebar-nav-item').forEach(function (it) { it.classList.remove('active'); });
+           item.classList.add('active');
+           var el = document.getElementById('section-' + section);
+           if (el && el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+           if (section === 'statistics') self.renderStats();
++          if (section === 'bracket') dispatchBracketActivated();
+         });
+       });
+ 
+       var feeInputEl = getElement('input-fee');
+       if (feeInputEl) {
+         feeInputEl.addEventListener('input', function (e) {
+           var fee = parseFloat(e.target.value) || 0;
+           self.tournament.fee = fee;
+           BilposStorage.saveTournament(self.tournament);
+           self.renderStats();
+         });
+       }
+ 
+       var inputSize = getElement('input-size');
+       if (inputSize) {
+         inputSize.addEventListener('change', function (e) {
+           var size = parseInt(e.target.value, 10);
+           self.tournament.size = size;
+           BilposStorage.saveTournament(self.tournament);
++          dispatchBracketActivated();
+           self.renderParticipantTable();
+           self.renderStats();
+         });
+       }
+ 
+       var participantTbody = getElement('participant-tbody');
+       if (participantTbody) {
+         participantTbody.addEventListener('click', function (e) {
+           var btn = (e.target && typeof e.target.closest === 'function') ? e.target.closest('.status-btn') : null;
+           if (!btn) return;
+diff --git a/tests/app-events.test.js b/tests/app-events.test.js
+index e4a440c..fbb943c 100644
+--- a/tests/app-events.test.js
++++ b/tests/app-events.test.js
+@@ -17,20 +17,35 @@ class FakeClassList {
+   setFromString(value) {
+     this.items = String(value || '')
+       .split(/\s+/)
+       .filter(Boolean);
+     this._sync();
+   }
+ 
+   contains(token) {
+     return this.items.includes(token);
+   }
++
++  add(token) {
++    if (!this.items.includes(token)) {
++      this.items.push(token);
++      this._sync();
++    }
++  }
++
++  remove(token) {
++    const idx = this.items.indexOf(token);
++    if (idx !== -1) {
++      this.items.splice(idx, 1);
++      this._sync();
++    }
++  }
+ }
+ 
+ class FakeElement {
+   constructor(tagName, ownerDocument) {
+     this.tagName = String(tagName || 'div').toUpperCase();
+     this.ownerDocument = ownerDocument;
+     this.children = [];
+     this.parentNode = null;
+     this.dataset = {};
+     this.textContent = '';
+@@ -194,39 +209,47 @@ function appendElement(document, tagName, config) {
+   return element;
+ }
+ 
+ function loadApp(options) {
+   const document = new FakeDocument();
+   const window = { document: document };
+   const config = options || {};
+   const toastCalls = [];
+   const savedParticipantsCalls = [];
+   const savedBracketCalls = [];
++  const dispatchedEvents = [];
+   let participants = config.participants ? config.participants.slice() : [];
+ 
++  window.addEventListener = function(eventName, handler) {};
++  window.dispatchEvent = function(event) {
++    dispatchedEvents.push(event && event.type ? event.type : String(event));
++  };
++
+   const context = {
+     window: window,
+     document: document,
+     console: console,
++    CustomEvent: function(type) { return { type: type }; },
+     BilposStorage: {
+       loadTournament: function () {
+         return { size: 2, venue: '', status: '' };
+       },
+       loadParticipants: function () {
+         return participants;
+       },
+       loadBracket: function () {
+         return config.bracket || null;
+       },
+       loadSettings: function () {
+         return { zoom: 100 };
+       },
++      saveTournament: function(data) {},
+       saveParticipants: function (nextParticipants) {
+         participants = nextParticipants;
+         savedParticipantsCalls.push(nextParticipants);
+       },
+       saveBracket: function (bracket) {
+         savedBracketCalls.push(bracket);
+       }
+     },
+     BilposDrawing: {
+       drawSlot: config.drawSlot || function () {
+@@ -239,38 +262,41 @@ function loadApp(options) {
+           bracket: bracket,
+           roundIdx: roundIdx,
+           matchIdx: matchIdx,
+           winner: winner
+         };
+       }
+     },
+     BilposUI: {
+       showToast: function (message, type) {
+         toastCalls.push({ message: message, type: type });
+-      }
++      },
++      updateHeader: function() {}
+     }
+   };
+ 
+   window.BilposStorage = context.BilposStorage;
+   window.BilposDrawing = context.BilposDrawing;
+   window.BilposTournament = context.BilposTournament;
+   window.BilposUI = context.BilposUI;
+ 
+   const appPath = path.join(process.cwd(), 'assets', 'js', 'app.js');
+   const source = fs.readFileSync(appPath, 'utf8');
+   vm.createContext(context);
+   vm.runInContext(source, context);
+ 
+   return {
+     BilposApp: context.window.BilposApp,
+     document: document,
++    window: window,
+     toastCalls: toastCalls,
++    dispatchedEvents: dispatchedEvents,
+     getSavedParticipantsCalls: function () {
+       return savedParticipantsCalls;
+     },
+     getSavedBracketCalls: function () {
+       return savedBracketCalls;
+     },
+     getParticipants: function () {
+       return participants;
+     }
+   };
+@@ -353,10 +379,58 @@ test('score change keeps partial scores live without advancing winner', () => {
+   app.renderBracket = function () {};
+   app.renderStats = function () {};
+   app.wireEvents();
+   bracketRenderArea.dispatchEvent('change', { target: scoreInput });
+ 
+   assert.equal(app.bracket.rounds[0][0].score1, '5');
+   assert.equal(app.bracket.rounds[0][0].winner, null);
+   assert.equal(app.bracket.rounds[0][0].status, 'live');
+   assert.equal(advanceCalls.length, 0);
+ });
++
++test('size change dispatches bilpos:bracket-activated event', () => {
++  const loaded = loadApp();
++  const app = loaded.BilposApp;
++
++  app.tournament = { size: 32, fee: 0 };
++  app.renderParticipantTable = function() {};
++  app.renderStats = function() {};
++
++  appendElement(loaded.document, 'input', { id: 'input-size', value: '16' });
++
++  app.wireEvents();
++
++  const sizeInput = loaded.document.getElementById('input-size');
++  sizeInput.value = '16';
++  sizeInput.dispatchEvent('change', { target: sizeInput });
++
++  assert.ok(
++    loaded.dispatchedEvents.includes('bilpos:bracket-activated'),
++    'Expected bilpos:bracket-activated to be dispatched when size changes'
++  );
++});
++
++test('clicking bracket nav item dispatches bilpos:bracket-activated event', () => {
++  const loaded = loadApp();
++  const app = loaded.BilposApp;
++
++  app.tournament = { size: 32, fee: 0 };
++  app.renderStats = function() {};
++  app.renderParticipantTable = function() {};
++
++  // Tambah nav items ke fake DOM
++  const bracketNavItem = appendElement(loaded.document, 'div', {
++    className: 'sidebar-nav-item',
++    dataset: { section: 'bracket' }
++  });
++  appendElement(loaded.document, 'div', {
++    id: 'section-bracket'
++  });
++
++  app.wireEvents();
++  bracketNavItem.dispatchEvent('click', {});
++
++  assert.ok(
++    loaded.dispatchedEvents.includes('bilpos:bracket-activated'),
++    'Expected bilpos:bracket-activated to be dispatched when bracket nav is clicked'
++  );
++});
