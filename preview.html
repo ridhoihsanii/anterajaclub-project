@@ -7,7 +7,7 @@
   <title>Bracket Preview — BILPOS Tournament</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -32,7 +32,7 @@
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      overflow-x: auto;
+      overflow: hidden; /* pan+zoom container handles scrolling */
     }
 
     /* ── Header ───────────────────────────────────────── */
@@ -71,16 +71,25 @@
       gap: 6px;
     }
 
-    /* ── Bracket scroll area ──────────────────────────── */
+    /* ── Pan + Zoom outer container ──────────────────── */
+    #bracket-outer {
+      position: fixed;
+      top: 52px;
+      left: 0; right: 0; bottom: 0;
+      overflow: hidden;
+      touch-action: none; /* we handle all touch manually */
+      background: var(--bg);
+      cursor: grab;
+    }
+    #bracket-outer:active { cursor: grabbing; }
+
+    /* ── Bracket scroll area (no overflow — panning handles it) ── */
     .bracket-scroll {
       display: flex;
       flex-direction: row;
       align-items: flex-start;
-      overflow-x: auto;
-      overflow-y: visible;
       gap: var(--round-gap);
-      padding: 24px 32px 100px;
-      min-height: calc(100vh - 52px);
+      padding: 24px 32px 64px;
     }
 
     /* ── Round column ─────────────────────────────────── */
@@ -298,8 +307,9 @@
     /* ── Responsive ───────────────────────────────────── */
     @media (max-width: 600px) {
       :root { --card-w: 220px; }
-      .bracket-scroll { padding: 16px 16px 100px; gap: 36px; }
-      .qr-card { top: 60px; right: 12px; }
+      .bracket-scroll { padding: 16px 16px 64px; gap: 36px; }
+      .qr-card { top: 60px; right: 8px; }
+      #bracket-outer { top: 50px; }
     }
   </style>
 </head>
@@ -316,15 +326,19 @@
   <div class="preview-hint">
     <span>👁 Read-only</span>
     <span>·</span>
-    <span>📱 Pinch / Ctrl+scroll to zoom</span>
+    <span>📱 Pinch to zoom · Drag to pan</span>
+    <span>·</span>
+    <button id="btn-fit" style="background:rgba(217,119,6,0.1);border:1px solid rgba(217,119,6,0.3);color:#d97706;font-family:inherit;font-size:10px;font-weight:600;padding:3px 9px;border-radius:5px;cursor:pointer;letter-spacing:.5px;">⊡ FIT</button>
   </div>
 </header>
 
-<div id="bracket-root"></div>
+<div id="bracket-outer">
+  <div id="bracket-root"></div>
+</div>
 
 <div class="qr-card" id="qr-card">
   <div class="qr-title">📲 Scan to Share</div>
-  <div id="qr-wrap" style="min-width:148px;min-height:148px;display:flex;align-items:center;justify-content:center;">
+  <div id="qr-wrap" style="display:flex;align-items:center;justify-content:center;min-width:100px;min-height:100px;">
     <span id="qr-status" style="font-size:10px;color:#64748b;text-align:center;">Generating…</span>
   </div>
   <button class="qr-copy" id="qr-copy-btn">📋 Copy link</button>
@@ -538,58 +552,173 @@ function buildMatchCard(match, matchNum, liveMatchId) {
   return card;
 }
 
-// ── QR code ────────────────────────────────────────────────────────────
+// ── QR code (qrcode-generator: crisp canvas, scannable) ───────────────
 function initQR() {
   var url     = window.location.href;
   var wrap    = document.getElementById('qr-wrap');
   var copyBtn = document.getElementById('qr-copy-btn');
 
-  if (typeof QRCode !== 'undefined') {
+  if (typeof qrcode !== 'undefined') {
     try {
-      wrap.innerHTML = ''; // clear "Generating…" text
-      new QRCode(wrap, {
-        text: url,
-        width: 148,
-        height: 148,
-        colorDark:  '#0f172a',
-        colorLight: '#ffffff',
-        correctLevel: QRCode.CorrectLevel.L   // L = max data capacity
-      });
-      // Apply border to the generated img/canvas element
-      setTimeout(function() {
-        var el = wrap.querySelector('img') || wrap.querySelector('canvas');
-        if (el) {
-          el.style.border        = '2px solid #0f172a';
-          el.style.borderRadius  = '0';
-          el.style.display       = 'block';
+      var qr = qrcode(0, 'L'); // type 0 = auto-detect version; L = max data capacity
+      qr.addData(url);
+      qr.make();
+
+      var moduleCount = qr.getModuleCount();
+      var cellSize    = Math.max(4, Math.ceil(220 / moduleCount)); // min 4px per module
+      var canvasSize  = moduleCount * cellSize;
+
+      var cvs = document.createElement('canvas');
+      cvs.width  = canvasSize;
+      cvs.height = canvasSize;
+      cvs.style.display       = 'block';
+      cvs.style.border        = '3px solid #0f172a';
+      cvs.style.borderRadius  = '0';
+
+      var ctx = cvs.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvasSize, canvasSize);
+      ctx.fillStyle = '#0f172a';
+      for (var row = 0; row < moduleCount; row++) {
+        for (var col = 0; col < moduleCount; col++) {
+          if (qr.isDark(row, col)) {
+            ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+          }
         }
-      }, 200);
+      }
+
+      wrap.innerHTML = '';
+      wrap.style.minWidth  = '';
+      wrap.style.minHeight = '';
+      wrap.appendChild(cvs);
     } catch(e) {
-      wrap.innerHTML = '<span style="font-size:9px;color:#dc2626;text-align:center;padding:8px;max-width:140px;">URL terlalu panjang untuk QR.<br>Gunakan tombol Copy link.</span>';
+      wrap.innerHTML = '<span style="font-size:9px;color:#dc2626;text-align:center;padding:8px;">URL terlalu panjang.<br>Gunakan Copy link.</span>';
     }
   } else {
-    wrap.innerHTML = '<span style="font-size:9px;color:#dc2626;text-align:center;padding:8px;">QR library gagal dimuat.<br>Gunakan tombol Copy link.</span>';
+    wrap.innerHTML = '<span style="font-size:9px;color:#dc2626;text-align:center;padding:8px;">QR library<br>gagal dimuat.</span>';
   }
 
   copyBtn.addEventListener('click', function() {
     if (navigator.clipboard) {
       navigator.clipboard.writeText(url).then(function() {
-        copyBtn.textContent = 'Copied!';
-        setTimeout(function() { copyBtn.textContent = 'Copy link'; }, 2000);
+        copyBtn.textContent = '✅ Copied!';
+        setTimeout(function() { copyBtn.textContent = '📋 Copy link'; }, 2000);
       });
     } else {
-      // fallback
       var ta = document.createElement('textarea');
       ta.value = url;
       document.body.appendChild(ta);
       ta.select();
       document.execCommand('copy');
       document.body.removeChild(ta);
-      copyBtn.textContent = 'Copied!';
-      setTimeout(function() { copyBtn.textContent = 'Copy link'; }, 2000);
+      copyBtn.textContent = '✅ Copied!';
+      setTimeout(function() { copyBtn.textContent = '📋 Copy link'; }, 2000);
     }
   });
 }
+
+// ── Pan + Pinch Zoom ───────────────────────────────────────────────────
+(function() {
+  var outer = document.getElementById('bracket-outer');
+  var inner = document.getElementById('bracket-root');
+  if (!outer || !inner) return;
+
+  var scale = 1, panX = 0, panY = 0;
+  var MIN_SCALE = 0.05, MAX_SCALE = 4;
+
+  inner.style.transformOrigin = '0 0';
+  inner.style.display = 'inline-block';
+
+  function applyTransform() {
+    inner.style.transform = 'translate(' + panX + 'px, ' + panY + 'px) scale(' + scale + ')';
+  }
+
+  function autoFit() {
+    var iW = inner.scrollWidth;
+    var iH = inner.scrollHeight;
+    var oW = outer.clientWidth;
+    var oH = outer.clientHeight;
+    if (!iW || !iH) return;
+    var s = Math.min(oW / iW, oH / iH, 1);
+    scale = s; panX = 0; panY = 0;
+    applyTransform();
+  }
+
+  // ── Touch (1 finger = pan, 2 fingers = pinch zoom + pan) ──
+  var startPanX, startPanY, startScale, startDist, startMid;
+
+  outer.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    if (e.touches.length === 1) {
+      startPanX = panX; startPanY = panY;
+      startMid  = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    } else if (e.touches.length >= 2) {
+      startDist  = Math.hypot(e.touches[1].clientX - e.touches[0].clientX,
+                               e.touches[1].clientY - e.touches[0].clientY);
+      startScale = scale;
+      startPanX  = panX; startPanY = panY;
+      startMid   = { x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
+                     y: (e.touches[0].clientY + e.touches[1].clientY) / 2 };
+    }
+  }, { passive: false });
+
+  outer.addEventListener('touchmove', function(e) {
+    e.preventDefault();
+    if (e.touches.length === 1 && startMid) {
+      panX = startPanX + e.touches[0].clientX - startMid.x;
+      panY = startPanY + e.touches[0].clientY - startMid.y;
+    } else if (e.touches.length >= 2) {
+      var dist  = Math.hypot(e.touches[1].clientX - e.touches[0].clientX,
+                              e.touches[1].clientY - e.touches[0].clientY);
+      var mx    = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+      var my    = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+      var newS  = Math.min(MAX_SCALE, Math.max(MIN_SCALE, startScale * dist / startDist));
+      var ratio = newS / startScale;
+      panX  = mx + ratio * (startPanX - startMid.x);
+      panY  = my + ratio * (startPanY - startMid.y);
+      scale = newS;
+    }
+    applyTransform();
+  }, { passive: false });
+
+  outer.addEventListener('touchend', function() { startMid = null; });
+
+  // ── Mouse drag (desktop pan) ──
+  var dragging = false, dragStartX, dragStartY, dragPanX, dragPanY;
+  outer.addEventListener('mousedown', function(e) {
+    dragging = true;
+    dragStartX = e.clientX; dragStartY = e.clientY;
+    dragPanX = panX; dragPanY = panY;
+    e.preventDefault();
+  });
+  window.addEventListener('mousemove', function(e) {
+    if (!dragging) return;
+    panX = dragPanX + e.clientX - dragStartX;
+    panY = dragPanY + e.clientY - dragStartY;
+    applyTransform();
+  });
+  window.addEventListener('mouseup', function() { dragging = false; });
+
+  // ── Mouse wheel (desktop zoom) ──
+  outer.addEventListener('wheel', function(e) {
+    e.preventDefault();
+    var factor  = e.deltaY > 0 ? 0.85 : 1 / 0.85;
+    var newS    = Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale * factor));
+    var rect    = outer.getBoundingClientRect();
+    var ox = e.clientX - rect.left, oy = e.clientY - rect.top;
+    panX  = ox + (panX - ox) * (newS / scale);
+    panY  = oy + (panY - oy) * (newS / scale);
+    scale = newS;
+    applyTransform();
+  }, { passive: false });
+
+  // ── Fit button ──
+  var fitBtn = document.getElementById('btn-fit');
+  if (fitBtn) fitBtn.addEventListener('click', autoFit);
+
+  // Auto-fit on load
+  setTimeout(autoFit, 250);
+})();
 
 // ── Main: decode URL hash and render ──────────────────────────────────
 (function() {
