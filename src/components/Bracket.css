@@ -372,7 +372,8 @@
   border-color: #cbd5e1;
 }
 
-[data-theme='light'] .participant-label {
+[data-theme='light'] .participant-label,
+[data-theme='light'] .participant-name {
   color: #1e293b;
 }
 

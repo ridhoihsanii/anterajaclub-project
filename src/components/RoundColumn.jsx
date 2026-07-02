@@ -6,8 +6,9 @@ function getRoundLabel(roundIdx, totalRounds) {
   var fromEnd = totalRounds - 1 - roundIdx;
   if (fromEnd === 0) return 'FINAL';
   if (fromEnd === 1) return 'SEMI FINAL';
-  if (fromEnd === 2) return 'QUARTER FINAL';
-  return 'ROUND ' + (roundIdx + 1);
+  // "N besar" = number of remaining players = 2^(fromEnd+1)
+  var n = Math.pow(2, fromEnd + 1);
+  return n + ' BESAR';
 }
 
 // Global sequential match number offset for this round

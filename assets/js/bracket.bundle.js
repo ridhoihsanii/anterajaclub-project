@@ -23753,9 +23753,8 @@
       return "FINAL";
     if (fromEnd === 1)
       return "SEMI FINAL";
-    if (fromEnd === 2)
-      return "QUARTER FINAL";
-    return "ROUND " + (roundIdx + 1);
+    var n = Math.pow(2, fromEnd + 1);
+    return n + " BESAR";
   }
   function getMatchNumOffset(roundIdx, totalRounds) {
     var totalSlots = Math.pow(2, totalRounds);
