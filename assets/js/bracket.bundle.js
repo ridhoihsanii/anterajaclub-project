@@ -23990,6 +23990,27 @@
         if (prevWinner) {
           cascadeClearWinnerMut(newBracket, roundIdx, matchIdx);
         }
+        var p1 = match.p1;
+        var p2 = match.p2;
+        var p1IsReal = p1 && p1.id != null;
+        var p2IsReal = p2 && p2.id != null;
+        if (p1IsReal && !p2IsReal) {
+          var byeWinner = prev.participants.find(function(p) {
+            return String(p.id) === String(p1.id);
+          }) || p1;
+          match.winner = byeWinner;
+          match.status = "done";
+          if (window.BilposTournament)
+            window.BilposTournament.advanceWinner(newBracket, 0, matchIdx, byeWinner);
+        } else if (!p1IsReal && p2IsReal) {
+          var byeWinner = prev.participants.find(function(p) {
+            return String(p.id) === String(p2.id);
+          }) || p2;
+          match.winner = byeWinner;
+          match.status = "done";
+          if (window.BilposTournament)
+            window.BilposTournament.advanceWinner(newBracket, 0, matchIdx, byeWinner);
+        }
         saveState(newBracket, prev.liveMatchId);
         return { bracket: newBracket, liveMatchId: prev.liveMatchId, participants: prev.participants };
       });
