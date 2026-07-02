@@ -252,10 +252,10 @@
     .empty-state .icon { font-size: 48px; }
     .empty-state p { font-size: 14px; max-width: 400px; }
 
-    /* ── QR card (fixed bottom-right) ────────────────── */
+    /* ── QR card (fixed top-right) ────────────────────── */
     .qr-card {
       position: fixed;
-      bottom: 20px;
+      top: 68px;
       right: 20px;
       background: #fff;
       border-radius: 14px;
@@ -293,7 +293,7 @@
     @media (max-width: 600px) {
       :root { --card-w: 220px; }
       .bracket-scroll { padding: 16px 16px 100px; gap: 36px; }
-      .qr-card { bottom: 12px; right: 12px; }
+      .qr-card { top: 60px; right: 12px; }
     }
   </style>
 </head>
@@ -356,8 +356,8 @@ function getRoundLabel(roundIdx, totalRounds) {
   var fromEnd = totalRounds - 1 - roundIdx;
   if (fromEnd === 0) return 'FINAL';
   if (fromEnd === 1) return 'SEMI FINAL';
-  if (fromEnd === 2) return 'QUARTER FINAL';
-  return 'ROUND ' + (roundIdx + 1);
+  var n = Math.pow(2, fromEnd + 1);
+  return n + ' BESAR';
 }
 
 function getMatchNumOffset(roundIdx, totalRounds) {

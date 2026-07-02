@@ -81,8 +81,86 @@
     });
   }
 
+  // ── Bracket cascade-clear helpers (mirrors cascadeClearWinnerMut in BracketPage.jsx) ──
+
+  // Clear scores/winner of a match and propagate removal of winner to next round
+  function cascadeClearMatchInBracket(bracket, roundIdx, matchIdx) {
+    if (roundIdx + 1 >= bracket.rounds.length) return;
+    var match = bracket.rounds[roundIdx][matchIdx];
+    if (!match) return;
+
+    var prevWinner = match.winner;
+    match.score1 = '';
+    match.score2 = '';
+    match.winner = null;
+    match.status = 'pending';
+
+    if (prevWinner) {
+      var nextMatchIdx = Math.floor(matchIdx / 2);
+      var slot = matchIdx % 2 === 0 ? 'p1' : 'p2';
+      var nextMatch = bracket.rounds[roundIdx + 1] && bracket.rounds[roundIdx + 1][nextMatchIdx];
+      if (nextMatch && nextMatch[slot]) {
+        nextMatch[slot] = null;
+        cascadeClearMatchInBracket(bracket, roundIdx + 1, nextMatchIdx);
+      }
+    }
+  }
+
+  // Remove a participant from every match they appear in and cascade-clear results
+  function clearParticipantFromBracket(participantId) {
+    if (!window.BilposStorage) return;
+    var saved = BilposStorage.loadBracket();
+    if (!saved || !saved.bracket || !Array.isArray(saved.bracket.rounds)) return;
+    var bracket = saved.bracket;
+    var changed = false;
+
+    bracket.rounds.forEach(function (round, roundIdx) {
+      round.forEach(function (match, matchIdx) {
+        var cleared = false;
+        if (match.p1 && match.p1.id != null && String(match.p1.id) === String(participantId)) {
+          match.p1 = null;
+          cleared = true;
+        }
+        if (match.p2 && match.p2.id != null && String(match.p2.id) === String(participantId)) {
+          match.p2 = null;
+          cleared = true;
+        }
+        if (cleared) {
+          changed = true;
+          cascadeClearMatchInBracket(bracket, roundIdx, matchIdx);
+        }
+      });
+    });
+
+    if (changed) {
+      BilposStorage.saveBracket({ bracket: bracket, liveMatchId: saved.liveMatchId });
+      dispatchBracketActivated();
+    }
+  }
+
+  // Clear ALL real-participant references from every bracket match (used for delete-all)
+  function clearAllParticipantsFromBracket() {
+    if (!window.BilposStorage) return;
+    var saved = BilposStorage.loadBracket();
+    if (!saved || !saved.bracket || !Array.isArray(saved.bracket.rounds)) return;
+    var bracket = saved.bracket;
+
+    bracket.rounds.forEach(function (round) {
+      round.forEach(function (match) {
+        if (match.p1 && match.p1.id != null) match.p1 = null;
+        if (match.p2 && match.p2.id != null) match.p2 = null;
+        match.score1 = '';
+        match.score2 = '';
+        match.winner = null;
+        match.status = 'pending';
+      });
+    });
+
+    BilposStorage.saveBracket({ bracket: bracket, liveMatchId: saved.liveMatchId });
+    dispatchBracketActivated();
+  }
+
   var BilposApp = {
-    tournament: null,
     participants: [],
     settings: null,
     sortOrder: 'default',
@@ -355,6 +433,7 @@
           if (del) {
             var rowIndex = parseInt(del.dataset.row, 10);
             if (confirm('Hapus peserta ini?')) {
+              clearParticipantFromBracket('row-' + rowIndex);
               BilposStorage.deleteParticipant('row-' + rowIndex);
               self.participants = BilposStorage.loadParticipants();
               self.renderParticipantTable();
@@ -408,6 +487,7 @@
             self.participants = [];
             self.renderParticipantTable();
             self.renderStats();
+            clearAllParticipantsFromBracket();
             if (typeof BilposUI !== 'undefined') BilposUI.showToast('Semua peserta dihapus', 'success');
           }
         });
@@ -613,6 +693,7 @@
       var status = row && row.dataset.currentStatus || '';
       var existingParticipant = (this.participants || []).find(function (p) { return p && p.id === 'row-' + rowIndex; });
       var phone = existingParticipant ? (existingParticipant.phone || '') : '';
+      var oldName = existingParticipant ? (existingParticipant.name || '') : '';
 
       var participant = {
         id: 'row-' + rowIndex,
@@ -627,6 +708,11 @@
       BilposStorage.saveParticipant(participant);
       this.participants = BilposStorage.loadParticipants();
       this.renderStats();
+
+      // If name changed, clear this participant from bracket (matches need replaying)
+      if (oldName && name !== oldName) {
+        clearParticipantFromBracket('row-' + rowIndex);
+      }
     }
   };
 
