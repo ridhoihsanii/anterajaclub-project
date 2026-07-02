@@ -23532,7 +23532,7 @@
         const hc = getHcLabel(p);
         return hc ? p.name + " - " + hc : p.name;
       }
-      function computeMatchMargins(roundIdx, matchIdx) {
+      function computeMatchMargins2(roundIdx, matchIdx) {
         var step = (CARD_HEIGHT + CARD_GAP) * Math.pow(2, roundIdx);
         var offset = step / 2 - CARD_HEIGHT / 2;
         return { marginTop: matchIdx === 0 ? offset : step - CARD_HEIGHT };
@@ -23572,7 +23572,7 @@
         ARM_LENGTH,
         getHcLabel,
         getParticipantLabel: getParticipantLabel2,
-        computeMatchMargins,
+        computeMatchMargins: computeMatchMargins2,
         computeMatchTop: computeMatchTop2,
         computeMatchAreaHeight: computeMatchAreaHeight2,
         computeConnectorHeight: computeConnectorHeight2,
@@ -23773,41 +23773,46 @@
     var connectorH = (0, import_bracketUtils2.computeConnectorHeight)(roundIdx);
     var matchOffset = getMatchNumOffset(roundIdx, totalRounds);
     var displayLabel = roundLabel || getRoundLabel(roundIdx, totalRounds);
-    var matchAreaH = (0, import_bracketUtils2.computeMatchAreaHeight)(roundIdx, round.length);
-    return /* @__PURE__ */ import_react4.default.createElement("div", { className: "round-column" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "round-label" }, displayLabel), /* @__PURE__ */ import_react4.default.createElement("div", { className: "match-area", style: { height: matchAreaH + "px" } }, round.map(function(match, matchIdx) {
-      var topY = (0, import_bracketUtils2.computeMatchTop)(roundIdx, matchIdx);
+    function renderMatch(match, matchIdx, wrapperStyle) {
       var isTop = matchIdx % 2 === 0;
       var hasLeftArm = !isFirstRound;
       var connectorTop = !isFinalRound && isTop;
       var connectorBot = !isFinalRound && !isTop;
       var wrapperClass = "match-wrapper" + (hasLeftArm ? " has-left-arm" : "") + (connectorTop ? " connector-top" : "") + (connectorBot ? " connector-bottom" : "");
-      return /* @__PURE__ */ import_react4.default.createElement(
-        "div",
+      return /* @__PURE__ */ import_react4.default.createElement("div", { key: match.id, className: wrapperClass, style: wrapperStyle }, /* @__PURE__ */ import_react4.default.createElement(
+        MatchCard,
         {
-          key: match.id,
-          className: wrapperClass,
-          style: {
-            top: topY + "px",
-            "--connector-h": connectorH + "px"
-          }
-        },
-        /* @__PURE__ */ import_react4.default.createElement(
-          MatchCard,
-          {
-            match,
-            matchNum: matchOffset + matchIdx + 1,
-            roundIdx,
-            matchIdx,
-            isFirstRound,
-            participants,
-            usedParticipantIds,
-            liveMatchId,
-            onScoreChange,
-            onSelectParticipant,
-            onToggleLive
-          }
-        )
-      );
+          match,
+          matchNum: matchOffset + matchIdx + 1,
+          roundIdx,
+          matchIdx,
+          isFirstRound,
+          participants,
+          usedParticipantIds,
+          liveMatchId,
+          onScoreChange,
+          onSelectParticipant,
+          onToggleLive
+        }
+      ));
+    }
+    if (isFirstRound) {
+      return /* @__PURE__ */ import_react4.default.createElement("div", { className: "round-column" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "round-label" }, displayLabel), round.map(function(match, matchIdx) {
+        var margins = (0, import_bracketUtils2.computeMatchMargins)(0, matchIdx);
+        return renderMatch(match, matchIdx, {
+          marginTop: margins.marginTop + "px",
+          "--connector-h": connectorH + "px"
+        });
+      }));
+    }
+    var matchAreaH = (0, import_bracketUtils2.computeMatchAreaHeight)(roundIdx, round.length);
+    return /* @__PURE__ */ import_react4.default.createElement("div", { className: "round-column" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "round-label" }, displayLabel), /* @__PURE__ */ import_react4.default.createElement("div", { className: "match-area", style: { height: matchAreaH + "px" } }, round.map(function(match, matchIdx) {
+      var topY = (0, import_bracketUtils2.computeMatchTop)(roundIdx, matchIdx);
+      return renderMatch(match, matchIdx, {
+        position: "absolute",
+        top: topY + "px",
+        "--connector-h": connectorH + "px"
+      });
     })));
   }
   var import_react4, import_bracketUtils2;

@@ -48,7 +48,7 @@
   white-space: nowrap;
 }
 
-/* ──── Match area (absolute-position container for match cards) ── */
+/* ──── Match area (absolute-position container for winner rounds R1+) ── */
 .match-area {
   position: relative;
   overflow: visible;
@@ -57,8 +57,9 @@
 }
 
 /* ──── Match wrapper (position anchor for connector lines) ────── */
+/* R0: position:relative as flex child; R1+ overridden to absolute via inline style */
 .match-wrapper {
-  position: absolute;
+  position: relative;
   overflow: visible;
   width: 260px;
 }
