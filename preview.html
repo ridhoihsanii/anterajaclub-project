@@ -7,7 +7,7 @@
   <title>Bracket Preview — BILPOS Tournament</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -324,10 +324,9 @@
 
 <div class="qr-card" id="qr-card">
   <div class="qr-title">📲 Scan to Share</div>
-  <div id="qr-wrap" style="display:flex;align-items:center;justify-content:center;min-width:140px;min-height:140px;">
-    <span id="qr-status" style="font-size:10px;color:#64748b;text-align:center;">Generating QR…</span>
+  <div id="qr-wrap" style="min-width:148px;min-height:148px;display:flex;align-items:center;justify-content:center;">
+    <span id="qr-status" style="font-size:10px;color:#64748b;text-align:center;">Generating…</span>
   </div>
-  <canvas id="qr-canvas" style="display:none"></canvas>
   <button class="qr-copy" id="qr-copy-btn">📋 Copy link</button>
 </div>
 
@@ -542,28 +541,34 @@ function buildMatchCard(match, matchNum, liveMatchId) {
 // ── QR code ────────────────────────────────────────────────────────────
 function initQR() {
   var url     = window.location.href;
-  var canvas  = document.getElementById('qr-canvas');
   var wrap    = document.getElementById('qr-wrap');
-  var status  = document.getElementById('qr-status');
   var copyBtn = document.getElementById('qr-copy-btn');
 
   if (typeof QRCode !== 'undefined') {
-    QRCode.toCanvas(canvas, url, {
-      width: 148,
-      margin: 1,
-      errorCorrectionLevel: 'L',   // lowest EC = max data capacity
-      color: { dark: '#0f172a', light: '#ffffff' }
-    }, function(err) {
-      if (err) {
-        // URL too long for QR — show friendly fallback
-        wrap.innerHTML = '<span style="font-size:9px;color:#dc2626;text-align:center;padding:8px;">URL terlalu panjang<br>untuk QR code.<br>Gunakan tombol<br>Copy link.</span>';
-      } else {
-        wrap.style.display = 'none';
-        canvas.style.display = 'block';
-      }
-    });
+    try {
+      wrap.innerHTML = ''; // clear "Generating…" text
+      new QRCode(wrap, {
+        text: url,
+        width: 148,
+        height: 148,
+        colorDark:  '#0f172a',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.L   // L = max data capacity
+      });
+      // Apply border to the generated img/canvas element
+      setTimeout(function() {
+        var el = wrap.querySelector('img') || wrap.querySelector('canvas');
+        if (el) {
+          el.style.border        = '2px solid #0f172a';
+          el.style.borderRadius  = '0';
+          el.style.display       = 'block';
+        }
+      }, 200);
+    } catch(e) {
+      wrap.innerHTML = '<span style="font-size:9px;color:#dc2626;text-align:center;padding:8px;max-width:140px;">URL terlalu panjang untuk QR.<br>Gunakan tombol Copy link.</span>';
+    }
   } else {
-    status.textContent = 'QR tidak tersedia.';
+    wrap.innerHTML = '<span style="font-size:9px;color:#dc2626;text-align:center;padding:8px;">QR library gagal dimuat.<br>Gunakan tombol Copy link.</span>';
   }
 
   copyBtn.addEventListener('click', function() {
