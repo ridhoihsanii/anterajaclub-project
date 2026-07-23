@@ -5,15 +5,15 @@
 (function () {
   var FIREBASE_CONFIG = {
     apiKey:            'AIzaSyA6h6oCHrKixtZMEyqufpaZsaBrdrtBL1Y',
-    authDomain:        'anteraja-tournament.firebaseapp.com',
-    databaseURL:       'https://anteraja-tournament-default-rtdb.firebaseio.com',
-    projectId:         'anteraja-tournament',
-    storageBucket:     'anteraja-tournament.firebasestorage.app',
+    authDomain:        'bilpos-tournament.firebaseapp.com',
+    databaseURL:       'https://bilpos-tournament-default-rtdb.firebaseio.com',
+    projectId:         'bilpos-tournament',
+    storageBucket:     'bilpos-tournament.firebasestorage.app',
     messagingSenderId: '1016029844462',
     appId:             '1:1016029844462:web:159e221b47c584eed0b4ff'
   };
 
-  var PREVIEW_ID_KEY = 'anteraja_preview_id';
+  var PREVIEW_ID_KEY = 'bilpos_preview_id';
   var db = null;
 
   /* ── ID pendek unik per-browser (8-10 karakter) ─────────────────── */
@@ -44,7 +44,7 @@
       db = firebase.database();
       return true;
     } catch (e) {
-      console.warn('[AnterajaFirebase] init error:', e);
+      console.warn('[BilposFirebase] init error:', e);
       return false;
     }
   }
@@ -65,34 +65,25 @@
     }
 
     payloadObj.updatedAt = Date.now();
-
-    // Open the tab synchronously (as a direct result of the user's click) so
-    // browsers don't treat it as an unsolicited popup. The URL is already
-    // fully known before the Firebase write, so we don't need to wait for it.
-    var previewTab = window.open(url, '_blank');
-
     db.ref('brackets/' + id).set(payloadObj, function (err) {
       if (err) {
-        console.warn('[AnterajaFirebase] write error:', err);
+        console.warn('[BilposFirebase] write error:', err);
       }
+      window.open(url, '_blank');
     });
-
-    if (!previewTab) {
-      console.warn('[AnterajaFirebase] window.open blocked by browser popup blocker.');
-    }
   }
 
   /* ── Auto-sync saat bracket disimpan (setelah preview dibuka ≥1x) ─ */
   function hookSaveBracket() {
-    if (!window.AnterajaStorage || typeof AnterajaStorage.saveBracket !== 'function') return;
-    var original = AnterajaStorage.saveBracket.bind(AnterajaStorage);
-    AnterajaStorage.saveBracket = function (data) {
+    if (!window.BilposStorage || typeof BilposStorage.saveBracket !== 'function') return;
+    var original = BilposStorage.saveBracket.bind(BilposStorage);
+    BilposStorage.saveBracket = function (data) {
       original(data);
       // Hanya sync ke Firebase jika preview sudah pernah dibuka (ID sudah ada)
       var id = localStorage.getItem(PREVIEW_ID_KEY);
       if (!id) return;
       if (!db && !initFirebase()) return;
-      var tournament = AnterajaStorage.loadTournament ? AnterajaStorage.loadTournament() : {};
+      var tournament = BilposStorage.loadTournament ? BilposStorage.loadTournament() : {};
       db.ref('brackets/' + id).set({
         bracket:      data.bracket      || data,
         liveMatchIds: data.liveMatchIds || [],
@@ -103,7 +94,7 @@
   }
 
   /* ── Expose API ─────────────────────────────────────────────────── */
-  window.AnterajaFirebase = {
+  window.BilposFirebase = {
     init:              initFirebase,
     openPreview:       openPreview,
     getPreviewUrl:     getPreviewUrl,
