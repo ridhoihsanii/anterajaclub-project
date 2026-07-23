@@ -484,7 +484,7 @@ button {
 
 .btn-anteraja-primary {
   background: linear-gradient(135deg, var(--anteraja-primary) 0%, var(--anteraja-primary-dark) 100%);
-  color: var(--anteraja-black);
+  color: #FFFFFF;
   border: none;
   border-radius: var(--radius-sm);
   padding: 8px 18px;
@@ -580,7 +580,7 @@ button {
   height: 28px;
   padding: 0 10px;
   background: linear-gradient(135deg, var(--anteraja-primary), var(--anteraja-primary-dark));
-  color: var(--anteraja-black);
+  color: #FFFFFF;
   border-radius: 14px;
   font-size: 0.75rem;
   font-weight: 700;
@@ -1071,7 +1071,7 @@ button {
 .wheel-body { display:flex; align-items:center; justify-content:center; position:relative; }
 #wheel-canvas { background: radial-gradient(circle at center, rgba(255,255,255,0.02), transparent 40%); border-radius:50%; }
 .wheel-controls { display:flex; gap:10px; justify-content:center; margin-top:12px; }
-.wheel-spin-btn { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:84px; height:84px; border-radius:50%; background:linear-gradient(135deg,var(--anteraja-primary),var(--anteraja-primary-dark)); color:var(--anteraja-black); border:none; font-size:28px; box-shadow:0 12px 30px rgba(237,6,119,0.18); cursor:pointer; }
+.wheel-spin-btn { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:84px; height:84px; border-radius:50%; background:linear-gradient(135deg,var(--anteraja-primary),var(--anteraja-primary-dark)); color:#FFFFFF; border:none; font-size:28px; box-shadow:0 12px 30px rgba(237,6,119,0.18); cursor:pointer; }
 
 /* result modal */
 .wheel-result-modal { position:fixed; inset:0; display:none; align-items:center; justify-content:center; z-index:5000; }
@@ -1320,10 +1320,17 @@ button {
 }
 
 .empty-icon {
-  font-size: 3rem;
-  margin-bottom: 16px;
-  opacity: 0.6;
-  filter: grayscale(0.3);
+  font-size: 2.4rem;
+  width: 84px;
+  height: 84px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  color: var(--anteraja-primary);
+  background: var(--anteraja-pink);
+  border-radius: var(--radius-blob);
+  opacity: 0.9;
 }
 
 .empty-state h5 {
