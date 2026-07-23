@@ -5,7 +5,7 @@
   <!-- Allow pinch-to-zoom on mobile -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
   <title>Bracket Preview — Anteraja Tournament</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
   <!-- Firebase Realtime Database -->
@@ -31,7 +31,7 @@
       --border:    #cbd5e1;
       --text:      #0f172a;
       --muted:     #64748b;
-      --accent:    #d97706;
+      --accent:    #ED0677;
       --green:     #16a34a;
       --red:       #dc2626;
       --card-h:    100px;
@@ -42,7 +42,7 @@
     }
 
     body {
-      font-family: 'Poppins', sans-serif;
+      font-family: 'Baloo 2', sans-serif;
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
@@ -123,7 +123,7 @@
       color: var(--accent);
       margin-bottom: 12px;
       padding: 4px 8px;
-      background: rgba(217,119,6,0.08);
+      background: rgba(237,6,119,0.08);
       border-radius: 6px;
       white-space: nowrap;
     }
@@ -335,9 +335,9 @@
     }
     .qr-copy:hover { background: #e2e8f0; }
     .btn-qr {
-      background: rgba(217,119,6,0.1);
-      border: 1px solid rgba(217,119,6,0.3);
-      color: #d97706;
+      background: rgba(237,6,119,0.1);
+      border: 1px solid rgba(237,6,119,0.3);
+      color: #ED0677;
       font-family: inherit;
       font-size: 10px;
       font-weight: 600;
@@ -346,7 +346,7 @@
       cursor: pointer;
       letter-spacing: .5px;
     }
-    .btn-qr:hover { background: rgba(217,119,6,0.2); }
+    .btn-qr:hover { background: rgba(237,6,119,0.2); }
 
     /* ── Responsive ───────────────────────────────────── */
     @media (max-width: 600px) {
@@ -372,7 +372,7 @@
     <span>·</span>
     <span>📱 Pinch to zoom · Drag to pan</span>
     <span>·</span>
-    <button id="btn-fit" style="background:rgba(217,119,6,0.1);border:1px solid rgba(217,119,6,0.3);color:#d97706;font-family:inherit;font-size:10px;font-weight:600;padding:3px 9px;border-radius:5px;cursor:pointer;letter-spacing:.5px;">⊡ FIT</button>
+    <button id="btn-fit" style="background:rgba(237,6,119,0.1);border:1px solid rgba(237,6,119,0.3);color:#ED0677;font-family:inherit;font-size:10px;font-weight:600;padding:3px 9px;border-radius:5px;cursor:pointer;letter-spacing:.5px;">⊡ FIT</button>
     <button id="btn-qr" class="btn-qr">📲 QR CODE</button>
   </div>
 </header>
