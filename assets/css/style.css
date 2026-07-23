@@ -1127,7 +1127,7 @@ button {
 .match-toggle-dot { width: 16px; height: 16px; }
 
 
-.anteraja-section { display: none; animation: fadeIn 0.3s ease; }
+.anteraja-section { display: none; animation: fadeIn 0.3s ease; scroll-margin-top: calc(var(--header-height) + 16px); }
 
 .anteraja-section.active { display: block; }
 
