@@ -159,7 +159,7 @@ button {
 }
 
 .header-brand:hover {
-  color: #fde047;
+  color: #FF4FA3;
   text-shadow: 0 0 18px rgba(237,6,119,0.25);
 }
 
@@ -341,7 +341,7 @@ button {
 }
 
 .hamburger-btn:hover {
-  color: #fde047;
+  color: #FF4FA3;
   text-shadow: 0 0 16px rgba(237,6,119,0.24);
 }
 
@@ -1687,8 +1687,8 @@ button {
 }
 
 [data-theme="light"] .participant-table thead th {
-  background: #fef9c3;
-  color: #92400e;
+  background: #FDE6EF;
+  color: #841945;
 }
 
 [data-theme="light"] .participant-table tbody tr {
@@ -1696,7 +1696,7 @@ button {
 }
 
 [data-theme="light"] .participant-table tbody tr:hover {
-  background: #fef9c3;
+  background: #FDE6EF;
 }
 
 [data-theme="light"] .participant-table tbody td {
@@ -1714,7 +1714,7 @@ button {
 }
 
 [data-theme="light"] .table-input:focus {
-  background: #fef9c3;
+  background: #FDE6EF;
   border-color: var(--anteraja-primary);
 }
 
@@ -1753,7 +1753,7 @@ button {
 [data-theme="light"] .search-input::placeholder { color: #94a3b8; }
 
 [data-theme="light"] .search-input:focus {
-  background: #fef9c3;
+  background: #FDE6EF;
   border-color: var(--anteraja-primary);
 }
 
@@ -1781,7 +1781,7 @@ button {
 }
 
 [data-theme="light"] .top-taskbar .sidebar-nav-item.active {
-  color: #92400e;
+  color: #841945;
   background: rgba(193,5,97,0.12);
   border-color: rgba(193,5,97,0.25);
 }
