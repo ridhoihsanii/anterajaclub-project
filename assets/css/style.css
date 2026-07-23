@@ -67,7 +67,7 @@ html {
 }
 
 body {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Baloo 2', sans-serif;
   background: var(--bg);
   color: var(--text);
   overflow-x: hidden;
@@ -488,7 +488,7 @@ button {
   border: none;
   border-radius: var(--radius-sm);
   padding: 8px 18px;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Baloo 2', sans-serif;
   font-weight: 600;
   font-size: 0.8rem;
   text-transform: uppercase;
@@ -524,7 +524,7 @@ button {
   border: 1px solid var(--anteraja-border);
   border-radius: var(--radius-sm);
   padding: 8px 18px;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Baloo 2', sans-serif;
   font-weight: 500;
   font-size: 0.8rem;
   cursor: pointer;
@@ -678,7 +678,7 @@ button {
   border-radius: var(--radius-sm);
   padding: 5px 8px;
   color: var(--text-primary);
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Baloo 2', sans-serif;
   font-size: 0.8rem;
   width: 100%;
   transition: var(--transition);
@@ -721,7 +721,7 @@ button {
   border-radius: var(--radius-sm);
   padding: 5px 8px;
   color: var(--text-primary);
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Baloo 2', sans-serif;
   font-size: 0.8rem;
   cursor: pointer;
 }
@@ -933,7 +933,7 @@ button {
   border: 1px solid var(--anteraja-border);
   border-radius: 6px;
   color: var(--text-primary);
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Baloo 2', sans-serif;
   font-size: 0.8rem;
   font-weight: 700;
   text-align: center;
@@ -1010,7 +1010,7 @@ button {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Baloo 2', sans-serif;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -1182,7 +1182,7 @@ button {
   border-radius: var(--radius-sm);
   padding: 8px 12px 8px 32px;
   color: var(--text-primary);
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Baloo 2', sans-serif;
   font-size: 0.82rem;
   transition: var(--transition);
 }
@@ -1259,7 +1259,7 @@ button {
   border-radius: var(--radius-sm);
   padding: 10px 14px;
   color: var(--text-primary);
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Baloo 2', sans-serif;
   font-size: 0.875rem;
   transition: var(--transition);
 }
@@ -1280,7 +1280,7 @@ button {
   border-radius: var(--radius-sm);
   padding: 10px 14px;
   color: var(--text-primary);
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Baloo 2', sans-serif;
   font-size: 0.875rem;
   cursor: pointer;
   transition: var(--transition);
@@ -1406,7 +1406,7 @@ button {
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition);
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Baloo 2', sans-serif;
   border: 1px solid var(--anteraja-border);
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -1466,7 +1466,7 @@ button {
   padding: 3px 6px;
   color: var(--text-primary);
   font-size: 0.75rem;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Baloo 2', sans-serif;
   display: none;
 }
 
