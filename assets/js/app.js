@@ -1,4 +1,4 @@
-﻿(function () {
+(function () {
   function escapeHtml(value) {
     return String(value == null ? '' : value)
       .replace(/&/g, '&amp;')
@@ -18,8 +18,8 @@
   function dispatchBracketActivated() {
     if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
       var event = typeof CustomEvent === 'function'
-        ? new CustomEvent('bilpos:bracket-activated')
-        : { type: 'bilpos:bracket-activated' };
+        ? new CustomEvent('anteraja:bracket-activated')
+        : { type: 'anteraja:bracket-activated' };
       window.dispatchEvent(event);
     }
   }
@@ -27,8 +27,8 @@
   function dispatchParticipantsUpdated() {
     if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
       var event = typeof CustomEvent === 'function'
-        ? new CustomEvent('bilpos:participants-updated')
-        : { type: 'bilpos:participants-updated' };
+        ? new CustomEvent('anteraja:participants-updated')
+        : { type: 'anteraja:participants-updated' };
       window.dispatchEvent(event);
     }
   }
@@ -90,7 +90,7 @@
     });
   }
 
-  // ── Bracket cascade-clear helpers (mirrors cascadeClearWinnerMut in BracketPage.jsx) ──
+  // -- Bracket cascade-clear helpers (mirrors cascadeClearWinnerMut in BracketPage.jsx) --
 
   // Clear scores/winner of a match and propagate removal of winner to next round
   function cascadeClearMatchInBracket(bracket, roundIdx, matchIdx) {
@@ -117,8 +117,8 @@
 
   // Update participant name/hc in every bracket match where they appear (live rename)
   function updateParticipantInBracket(participantId, updatedParticipant) {
-    if (!window.BilposStorage) return;
-    var saved = BilposStorage.loadBracket();
+    if (!window.AnterajaStorage) return;
+    var saved = AnterajaStorage.loadBracket();
     if (!saved || !saved.bracket || !Array.isArray(saved.bracket.rounds)) return;
     var bracket = saved.bracket;
     var changed = false;
@@ -145,15 +145,15 @@
     });
 
     if (changed) {
-      BilposStorage.saveBracket({ bracket: bracket, liveMatchId: saved.liveMatchId });
+      AnterajaStorage.saveBracket({ bracket: bracket, liveMatchId: saved.liveMatchId });
       dispatchBracketActivated();
     }
   }
 
   // Remove a participant from every match they appear in and cascade-clear results
   function clearParticipantFromBracket(participantId) {
-    if (!window.BilposStorage) return;
-    var saved = BilposStorage.loadBracket();
+    if (!window.AnterajaStorage) return;
+    var saved = AnterajaStorage.loadBracket();
     if (!saved || !saved.bracket || !Array.isArray(saved.bracket.rounds)) return;
     var bracket = saved.bracket;
     var changed = false;
@@ -177,15 +177,15 @@
     });
 
     if (changed) {
-      BilposStorage.saveBracket({ bracket: bracket, liveMatchId: saved.liveMatchId });
+      AnterajaStorage.saveBracket({ bracket: bracket, liveMatchId: saved.liveMatchId });
       dispatchBracketActivated();
     }
   }
 
   // Clear ALL real-participant references from every bracket match (used for delete-all)
   function clearAllParticipantsFromBracket() {
-    if (!window.BilposStorage) return;
-    var saved = BilposStorage.loadBracket();
+    if (!window.AnterajaStorage) return;
+    var saved = AnterajaStorage.loadBracket();
     if (!saved || !saved.bracket || !Array.isArray(saved.bracket.rounds)) return;
     var bracket = saved.bracket;
 
@@ -200,33 +200,33 @@
       });
     });
 
-    BilposStorage.saveBracket({ bracket: bracket, liveMatchId: saved.liveMatchId });
+    AnterajaStorage.saveBracket({ bracket: bracket, liveMatchId: saved.liveMatchId });
     dispatchBracketActivated();
   }
 
-  var BilposApp = {
+  var AnterajaApp = {
     participants: [],
     settings: null,
     sortOrder: 'default',
     _eventsWired: false,
 
     init: function () {
-      if (typeof BilposStorage === 'undefined') {
+      if (typeof AnterajaStorage === 'undefined') {
         return;
       }
-      this.tournament = BilposStorage.loadTournament();
-      this.participants = BilposStorage.loadParticipants();
-      this.settings = BilposStorage.loadSettings();
+      this.tournament = AnterajaStorage.loadTournament();
+      this.participants = AnterajaStorage.loadParticipants();
+      this.settings = AnterajaStorage.loadSettings();
       this.sortOrder = 'default';
       this.renderTournamentSetup();
       this.renderParticipantTable();
       this.renderStats();
       this.wireEvents();
-      document.querySelectorAll('.bilpos-section').forEach(function (s) {
+      document.querySelectorAll('.anteraja-section').forEach(function (s) {
         s.style.display = '';
         if (s.classList) s.classList.add('active');
       });
-      BilposUI.updateHeader(this.tournament);
+      AnterajaUI.updateHeader(this.tournament);
       try {
         var navDefault = document.querySelector('.sidebar-nav-item[data-section="dashboard"]');
         if (navDefault) navDefault.classList.add('active');
@@ -235,7 +235,7 @@
 
     renderTournamentSetup: function () {
       var sizeInput = getElement('input-size');
-      var tournament = this.tournament || BilposStorage.loadTournament();
+      var tournament = this.tournament || AnterajaStorage.loadTournament();
       var size = parseInt(tournament.size, 10) || 32;
 
       var feeInput = getElement('input-fee');
@@ -309,7 +309,7 @@
             '</td>' +
             '<td>' +
               '<select class="table-select hc-select" data-row="' + i + '">' +
-                '<option value="">— HC —</option>' +
+                '<option value="">� HC �</option>' +
                 '<option value="HC 3B"' + (hcValue === 'HC 3B' ? ' selected' : '') + '>HC 3B</option>' +
                 '<option value="HC 3N"' + (hcValue === 'HC 3N' ? ' selected' : '') + '>HC 3N</option>' +
                 '<option value="HC 3A"' + (hcValue === 'HC 3A' ? ' selected' : '') + '>HC 3A</option>' +
@@ -356,7 +356,7 @@
       setElText('stat-transfer', transferAmount);
       setElText('stat-total-bayar', totalBayar);
       setElText('stat-belum-bayar', belumBayar < 0 ? 0 : belumBayar);
-      BilposUI.updateHeader(this.tournament);
+      AnterajaUI.updateHeader(this.tournament);
     },
 
     wireEvents: function () {
@@ -382,7 +382,7 @@
         feeInputEl.addEventListener('input', function (e) {
           var fee = parseFloat(e.target.value) || 0;
           self.tournament.fee = fee;
-          BilposStorage.saveTournament(self.tournament);
+          AnterajaStorage.saveTournament(self.tournament);
           self.renderStats();
         });
       }
@@ -392,7 +392,7 @@
         inputSize.addEventListener('change', function (e) {
           var size = parseInt(e.target.value, 10);
           self.tournament.size = size;
-          BilposStorage.saveTournament(self.tournament);
+          AnterajaStorage.saveTournament(self.tournament);
           dispatchBracketActivated();
           self.renderParticipantTable();
           self.renderStats();
@@ -428,8 +428,8 @@
           var participant = self.getParticipantForRow(rowIndex);
           if (participant && participant.id) {
             participant.status = newStatus;
-            BilposStorage.saveParticipant(participant);
-            self.participants = BilposStorage.loadParticipants();
+            AnterajaStorage.saveParticipant(participant);
+            self.participants = AnterajaStorage.loadParticipants();
             self.renderStats();
           }
         });
@@ -478,12 +478,12 @@
             var rowIndex = parseInt(del.dataset.row, 10);
             if (confirm('Hapus peserta ini?')) {
               clearParticipantFromBracket('row-' + rowIndex);
-              BilposStorage.deleteParticipant('row-' + rowIndex);
-              self.participants = BilposStorage.loadParticipants();
+              AnterajaStorage.deleteParticipant('row-' + rowIndex);
+              self.participants = AnterajaStorage.loadParticipants();
               self.renderParticipantTable();
               self.renderStats();
               dispatchParticipantsUpdated();
-              if (typeof BilposUI !== 'undefined') BilposUI.showToast('Peserta dihapus', 'success');
+              if (typeof AnterajaUI !== 'undefined') AnterajaUI.showToast('Peserta dihapus', 'success');
             }
           }
         });
@@ -504,11 +504,11 @@
           try {
             var key = evt.key;
             if (!key) return;
-            var interesting = ['bilpos_participants', 'bilpos_tournament', 'bilpos_settings'];
+            var interesting = ['anteraja_participants', 'anteraja_tournament', 'anteraja_settings'];
             if (interesting.indexOf(key) === -1) return;
-            try { self.tournament = BilposStorage.loadTournament(); } catch (e) {}
-            try { self.participants = BilposStorage.loadParticipants(); } catch (e) {}
-            try { self.settings = BilposStorage.loadSettings(); } catch (e) {}
+            try { self.tournament = AnterajaStorage.loadTournament(); } catch (e) {}
+            try { self.participants = AnterajaStorage.loadParticipants(); } catch (e) {}
+            try { self.settings = AnterajaStorage.loadSettings(); } catch (e) {}
             try { self.renderParticipantTable(); self.renderStats(); } catch (e) {}
           } catch (err) {}
         });
@@ -518,7 +518,7 @@
       if (resetAllBtn) {
         resetAllBtn.addEventListener('click', function () {
           if (confirm('RESET SEMUA DATA? Tindakan ini tidak dapat dibatalkan!')) {
-            BilposStorage.clearAll();
+            AnterajaStorage.clearAll();
             location.reload();
           }
         });
@@ -528,13 +528,13 @@
       if (deleteAllBtn) {
         deleteAllBtn.addEventListener('click', function () {
           if (confirm('Hapus semua peserta? Tindakan ini akan mengosongkan daftar peserta.')) {
-            BilposStorage.saveParticipants([]);
+            AnterajaStorage.saveParticipants([]);
             self.participants = [];
             self.renderParticipantTable();
             self.renderStats();
             dispatchParticipantsUpdated();
             clearAllParticipantsFromBracket();
-            if (typeof BilposUI !== 'undefined') BilposUI.showToast('Semua peserta dihapus', 'success');
+            if (typeof AnterajaUI !== 'undefined') AnterajaUI.showToast('Semua peserta dihapus', 'success');
           }
         });
       }
@@ -563,16 +563,16 @@
       var previewBtn = getElement('btn-preview-bracket');
       if (previewBtn) {
         previewBtn.addEventListener('click', function () {
-          var saved      = window.BilposStorage ? BilposStorage.loadBracket()    : null;
-          var tournament = window.BilposStorage ? BilposStorage.loadTournament() : {};
+          var saved      = window.AnterajaStorage ? AnterajaStorage.loadBracket()    : null;
+          var tournament = window.AnterajaStorage ? AnterajaStorage.loadTournament() : {};
           var payloadObj = {
             bracket:      saved && saved.bracket      ? saved.bracket      : null,
             liveMatchIds: saved && saved.liveMatchIds ? saved.liveMatchIds : [],
             tournament:   tournament
           };
 
-          if (window.BilposFirebase) {
-            BilposFirebase.openPreview(payloadObj);
+          if (window.AnterajaFirebase) {
+            AnterajaFirebase.openPreview(payloadObj);
           } else {
             // Fallback: hash-based URL
             var compressed = window.LZString
@@ -646,22 +646,22 @@
           status: sortedRows[i].status
         });
       }
-      BilposStorage.saveParticipants(savedParticipants);
-      this.participants = BilposStorage.loadParticipants();
+      AnterajaStorage.saveParticipants(savedParticipants);
+      this.participants = AnterajaStorage.loadParticipants();
       this.renderParticipantTable();
       this.renderStats();
     },
 
     exportJSON: function () {
-      var data = BilposStorage.exportAll();
+      var data = AnterajaStorage.exportAll();
       var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
       var url = URL.createObjectURL(blob);
       var a = document.createElement('a');
       a.href = url;
-      a.download = 'bilpos-tournament-' + new Date().toISOString().slice(0, 10) + '.json';
+      a.download = 'anteraja-tournament-' + new Date().toISOString().slice(0, 10) + '.json';
       a.click();
       URL.revokeObjectURL(url);
-      BilposUI.showToast('Data berhasil diekspor!', 'success');
+      AnterajaUI.showToast('Data berhasil diekspor!', 'success');
     },
 
     importJSON: function (file) {
@@ -670,18 +670,18 @@
       reader.onload = function (e) {
         try {
           var data = JSON.parse(e.target.result);
-          BilposStorage.importAll(data);
-          BilposUI.showToast('Data berhasil diimpor!', 'success');
+          AnterajaStorage.importAll(data);
+          AnterajaUI.showToast('Data berhasil diimpor!', 'success');
           setTimeout(function () { location.reload(); }, 1000);
         } catch (err) {
-          BilposUI.showToast('File JSON tidak valid!', 'danger');
+          AnterajaUI.showToast('File JSON tidak valid!', 'danger');
         }
       };
       reader.readAsText(file);
     },
 
     exportExcel: function () {
-      var participants = BilposStorage.loadParticipants();
+      var participants = AnterajaStorage.loadParticipants();
       var rows = participants.map(function (p, i) {
         return {
           'No': i + 1,
@@ -692,19 +692,19 @@
         };
       });
       if (typeof XLSX === 'undefined') {
-        BilposUI.showToast('Library Excel tidak tersedia', 'danger');
+        AnterajaUI.showToast('Library Excel tidak tersedia', 'danger');
         return;
       }
       var wb = XLSX.utils.book_new();
       var ws = XLSX.utils.json_to_sheet(rows);
       XLSX.utils.book_append_sheet(wb, ws, 'Peserta');
-      XLSX.writeFile(wb, 'bilpos-peserta-' + new Date().toISOString().slice(0, 10) + '.xlsx');
-      BilposUI.showToast('Excel berhasil diekspor!', 'success');
+      XLSX.writeFile(wb, 'anteraja-peserta-' + new Date().toISOString().slice(0, 10) + '.xlsx');
+      AnterajaUI.showToast('Excel berhasil diekspor!', 'success');
     },
 
     importExcel: function (file) {
       if (!file || typeof XLSX === 'undefined') {
-        BilposUI.showToast('File atau library tidak tersedia', 'danger');
+        AnterajaUI.showToast('File atau library tidak tersedia', 'danger');
         return;
       }
       var reader = new FileReader();
@@ -722,12 +722,12 @@
               hc: String(row['HC'] || ''),
               status: String(row['Status Bayar'] || '')
             };
-            BilposStorage.saveParticipant(p);
+            AnterajaStorage.saveParticipant(p);
           });
-          BilposUI.showToast('Excel berhasil diimpor!', 'success');
+          AnterajaUI.showToast('Excel berhasil diimpor!', 'success');
           setTimeout(function () { location.reload(); }, 1000);
         } catch (err) {
-          BilposUI.showToast('Gagal membaca file Excel!', 'danger');
+          AnterajaUI.showToast('Gagal membaca file Excel!', 'danger');
         }
       };
       reader.readAsArrayBuffer(file);
@@ -757,8 +757,8 @@
         status: status
       };
 
-      BilposStorage.saveParticipant(participant);
-      this.participants = BilposStorage.loadParticipants();
+      AnterajaStorage.saveParticipant(participant);
+      this.participants = AnterajaStorage.loadParticipants();
       this.renderStats();
       dispatchParticipantsUpdated();
 
@@ -770,10 +770,10 @@
   };
 
   document.addEventListener('DOMContentLoaded', function () {
-    BilposApp.init();
+    AnterajaApp.init();
   });
 
   if (typeof window !== 'undefined') {
-    window.BilposApp = BilposApp;
+    window.AnterajaApp = AnterajaApp;
   }
 })();

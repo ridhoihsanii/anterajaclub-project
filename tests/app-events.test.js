@@ -229,7 +229,7 @@ function loadApp(options) {
     document: document,
     console: console,
     CustomEvent: function(type) { return { type: type }; },
-    BilposStorage: {
+    AnterajaStorage: {
       loadTournament: function () {
         return { size: 2, venue: '', status: '' };
       },
@@ -251,12 +251,12 @@ function loadApp(options) {
         savedBracketCalls.push(bracket);
       }
     },
-    BilposDrawing: {
+    AnterajaDrawing: {
       drawSlot: config.drawSlot || function () {
         return null;
       }
     },
-    BilposTournament: {
+    AnterajaTournament: {
       advanceWinner: config.advanceWinner || function (bracket, roundIdx, matchIdx, winner) {
         return {
           bracket: bracket,
@@ -266,7 +266,7 @@ function loadApp(options) {
         };
       }
     },
-    BilposUI: {
+    AnterajaUI: {
       showToast: function (message, type) {
         toastCalls.push({ message: message, type: type });
       },
@@ -274,10 +274,10 @@ function loadApp(options) {
     }
   };
 
-  window.BilposStorage = context.BilposStorage;
-  window.BilposDrawing = context.BilposDrawing;
-  window.BilposTournament = context.BilposTournament;
-  window.BilposUI = context.BilposUI;
+  window.AnterajaStorage = context.AnterajaStorage;
+  window.AnterajaDrawing = context.AnterajaDrawing;
+  window.AnterajaTournament = context.AnterajaTournament;
+  window.AnterajaUI = context.AnterajaUI;
 
   const appPath = path.join(process.cwd(), 'assets', 'js', 'app.js');
   const source = fs.readFileSync(appPath, 'utf8');
@@ -285,7 +285,7 @@ function loadApp(options) {
   vm.runInContext(source, context);
 
   return {
-    BilposApp: context.window.BilposApp,
+    AnterajaApp: context.window.AnterajaApp,
     document: document,
     window: window,
     toastCalls: toastCalls,
@@ -313,7 +313,7 @@ test('draw all persists assigned drawing numbers to storage', () => {
       return phone === '08111' ? 1 : 2;
     }
   });
-  const app = loaded.BilposApp;
+  const app = loaded.AnterajaApp;
   const drawAllButton = appendElement(loaded.document, 'button', { id: 'btn-draw-all' });
 
   appendElement(loaded.document, 'input', {
@@ -367,7 +367,7 @@ test('score change keeps partial scores live without advancing winner', () => {
       return nextBracket;
     }
   });
-  const app = loaded.BilposApp;
+  const app = loaded.AnterajaApp;
   const bracketRenderArea = appendElement(loaded.document, 'div', { id: 'bracket-render-area' });
   const scoreInput = appendElement(loaded.document, 'input', {
     className: 'score-input',
@@ -387,9 +387,9 @@ test('score change keeps partial scores live without advancing winner', () => {
   assert.equal(advanceCalls.length, 0);
 });
 
-test('size change dispatches bilpos:bracket-activated event', () => {
+test('size change dispatches anteraja:bracket-activated event', () => {
   const loaded = loadApp();
-  const app = loaded.BilposApp;
+  const app = loaded.AnterajaApp;
 
   app.tournament = { size: 32, fee: 0 };
   app.renderParticipantTable = function() {};
@@ -404,14 +404,14 @@ test('size change dispatches bilpos:bracket-activated event', () => {
   sizeInput.dispatchEvent('change', { target: sizeInput });
 
   assert.ok(
-    loaded.dispatchedEvents.includes('bilpos:bracket-activated'),
-    'Expected bilpos:bracket-activated to be dispatched when size changes'
+    loaded.dispatchedEvents.includes('anteraja:bracket-activated'),
+    'Expected anteraja:bracket-activated to be dispatched when size changes'
   );
 });
 
-test('clicking bracket nav item dispatches bilpos:bracket-activated event', () => {
+test('clicking bracket nav item dispatches anteraja:bracket-activated event', () => {
   const loaded = loadApp();
-  const app = loaded.BilposApp;
+  const app = loaded.AnterajaApp;
 
   app.tournament = { size: 32, fee: 0 };
   app.renderStats = function() {};
@@ -430,7 +430,7 @@ test('clicking bracket nav item dispatches bilpos:bracket-activated event', () =
   bracketNavItem.dispatchEvent('click', {});
 
   assert.ok(
-    loaded.dispatchedEvents.includes('bilpos:bracket-activated'),
-    'Expected bilpos:bracket-activated to be dispatched when bracket nav is clicked'
+    loaded.dispatchedEvents.includes('anteraja:bracket-activated'),
+    'Expected anteraja:bracket-activated to be dispatched when bracket nav is clicked'
   );
 });

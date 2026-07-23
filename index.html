@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="BILPOS - Professional Billiard Tournament Management System by Billiard Positif"/>
+  <meta name="description" content="ANTERAJA - Professional Billiard Tournament Management System by Ihsan"/>
   <meta name="theme-color" content="#0A0A0A"/>
-  <title>BILPOS — Billiard Positif Tournament System</title>
+  <title>ANTERAJA CLUB — ANTERAJA CLUB TOURNAMENT SYSTEM</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -13,20 +13,20 @@
   <link rel="stylesheet" href="assets/js/bracket.bundle.css">
 </head>
 <body>
-  <div class="bilpos-app">
-    <header class="bilpos-header">
+  <div class="anteraja-app">
+    <header class="anteraja-header">
       <a class="header-brand" href="#">
         <span class="brand-icon">🏆</span>
         <div>
-          <div>BILLIARD POSITIF</div>
-          <span class="brand-sub">BILPOS TOURNAMENT</span>
+          <div>ANTERAJA</div>
+          <span class="brand-sub">ANTERAJA CLUB TOURNAMENT</span>
         </div>
       </a>
       <div class="header-center">
         <nav class="top-taskbar">
           <div class="sidebar-nav-item" data-section="dashboard">Dashboard</div>
           <div class="sidebar-nav-item" data-section="setup">Tournament Setup</div>
-          <div class="sidebar-nav-item" data-section="participants">List Peserta Bilpos</div>
+          <div class="sidebar-nav-item" data-section="participants">List Peserta Anteraja</div>
           <div class="sidebar-nav-item" data-section="bracket">
             <i class="fas fa-sitemap"></i> Bracket
           </div>
@@ -37,10 +37,10 @@
       </div>
     </header>
 
-    <main class="bilpos-main" id="bilpos-main">
+    <main class="anteraja-main" id="anteraja-main">
       <div id="toast-container"></div>
 
-      <section class="bilpos-section active" id="section-dashboard">
+      <section class="anteraja-section active" id="section-dashboard">
         <div class="section-header">
           <div class="section-title">
             <i class="fas fa-th-large"></i>
@@ -90,7 +90,7 @@
 
       </section>
 
-      <section class="bilpos-section" id="section-setup">
+      <section class="anteraja-section" id="section-setup">
         <div class="section-header">
           <div class="section-title">
             <i class="fas fa-cog"></i>
@@ -100,44 +100,42 @@
 
         <div class="row g-3">
           <div class="col-lg-6">
-            <div class="bilpos-card">
-              <div class="card-header-bilpos">
+            <div class="anteraja-card">
+              <div class="card-header-anteraja">
                 <div class="card-icon"><i class="fas fa-trophy"></i></div>
                 <h5>Setup Tournament</h5>
               </div>
-              <div class="bilpos-form-group">
-                <label class="bilpos-label" for="input-size">Ukuran Tournament</label>
-                <select class="bilpos-select" id="input-size">
+              <div class="anteraja-form-group">
+                <label class="anteraja-label" for="input-size">Ukuran Tournament</label>
+                <select class="anteraja-select" id="input-size">
                   <option value="16">16 Players</option>
                   <option value="32" selected>32 Players</option>
-                  <option value="48">48 Players</option>
                   <option value="64">64 Players</option>
-                  <option value="96">96 Players</option>
                   <option value="128">128 Players</option>
                 </select>
               </div>
             </div>
           </div>
           <div class="col-lg-6">
-            <div class="bilpos-card">
-              <div class="card-header-bilpos">
+            <div class="anteraja-card">
+              <div class="card-header-anteraja">
                 <div class="card-icon"><i class="fas fa-wallet"></i></div>
                 <h5>Biaya Pendaftaran</h5>
               </div>
-              <div class="bilpos-form-group" style="margin:16px">
-                <label class="bilpos-label" for="input-fee">Biaya Pendaftaran (Rupiah)</label>
-                <input type="number" min="0" step="1000" class="bilpos-input" id="input-fee" placeholder="0" />
+              <div class="anteraja-form-group" style="margin:16px">
+                <label class="anteraja-label" for="input-fee">Biaya Pendaftaran (Rupiah)</label>
+                <input type="number" min="0" step="1000" class="anteraja-input" id="input-fee" placeholder="0" />
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section class="bilpos-section" id="section-participants">
+      <section class="anteraja-section" id="section-participants">
         <div class="section-header">
           <div class="section-title">
             <i class="fas fa-users"></i>
-            List Peserta BILPOS
+            List Peserta Anteraja
           </div>
         </div>
 
@@ -152,7 +150,7 @@
           </button>
         </div>
 
-        <div class="bilpos-card p-0">
+        <div class="anteraja-card p-0">
           <div class="participant-scroll-wrapper">
             <table class="participant-table" id="participant-table">
               <thead>
@@ -172,7 +170,7 @@
         </div>
       </section>
 
-      <section class="bilpos-section" id="section-bracket">
+      <section class="anteraja-section" id="section-bracket">
         <div class="section-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
           <div class="section-title">
             <i class="fas fa-sitemap"></i>
@@ -188,7 +186,7 @@
 
 
 
-      <footer class="bilpos-footer mt-4">
+      <footer class="anteraja-footer mt-4">
         Built with <span class="heart">❤️</span> by <span>Ihsan</span>
       </footer>
     </main>

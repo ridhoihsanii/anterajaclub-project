@@ -291,7 +291,7 @@ function createElement(document, tagName, options) {
 
 function mountBaseDom(document) {
   const toastContainer = createElement(document, 'div', { id: 'toast-container' });
-  const sidebar = createElement(document, 'aside', { className: 'bilpos-sidebar' });
+  const sidebar = createElement(document, 'aside', { className: 'anteraja-sidebar' });
   const overlay = createElement(document, 'div', { className: 'sidebar-overlay' });
   const headerVenue = createElement(document, 'div', { id: 'header-venue' });
   const headerStatus = createElement(document, 'div', { id: 'header-status' });
@@ -333,11 +333,11 @@ function mountBaseDom(document) {
   });
   const dashboardSection = createElement(document, 'section', {
     id: 'section-dashboard',
-    className: 'bilpos-section active'
+    className: 'anteraja-section active'
   });
   const participantsSection = createElement(document, 'section', {
     id: 'section-participants',
-    className: 'bilpos-section'
+    className: 'anteraja-section'
   });
 
   document.body.appendChild(dashboardNav);
@@ -357,18 +357,18 @@ function loadUi() {
 
   return {
     context: context,
-    BilposUI: context.window.BilposUI
+    AnterajaUI: context.window.AnterajaUI
   };
 }
 
-test('BilposUI exposes the required public API', () => {
+test('AnterajaUI exposes the required public API', () => {
   const uiPath = path.join(process.cwd(), 'assets', 'js', 'ui.js');
   assert.ok(fs.existsSync(uiPath), 'assets/js/ui.js should exist');
 
   const loaded = loadUi();
-  const ui = loaded.BilposUI;
+  const ui = loaded.AnterajaUI;
 
-  assert.ok(ui, 'window.BilposUI should be defined');
+  assert.ok(ui, 'window.AnterajaUI should be defined');
   [
     'showToast',
     'animateCounter',
@@ -388,7 +388,7 @@ test('BilposUI exposes the required public API', () => {
 
 test('showToast renders and auto-dismisses stacked toasts', async () => {
   const loaded = loadUi();
-  const ui = loaded.BilposUI;
+  const ui = loaded.AnterajaUI;
   const document = loaded.context.document;
   const toastContainer = document.getElementById('toast-container');
 
@@ -408,7 +408,7 @@ test('showToast renders and auto-dismisses stacked toasts', async () => {
 
 test('animateCounter updates numbers with easing and skips null elements', async () => {
   const loaded = loadUi();
-  const ui = loaded.BilposUI;
+  const ui = loaded.AnterajaUI;
   const document = loaded.context.document;
   const statTotal = document.getElementById('stat-total');
 
@@ -422,7 +422,7 @@ test('animateCounter updates numbers with easing and skips null elements', async
 
 test('updateStats updates numeric cards and venue text', async () => {
   const loaded = loadUi();
-  const ui = loaded.BilposUI;
+  const ui = loaded.AnterajaUI;
   const document = loaded.context.document;
 
   ui.updateStats(
@@ -451,7 +451,7 @@ test('updateStats updates numeric cards and venue text', async () => {
 
 test('updateHeader maps tournament header values safely', () => {
   const loaded = loadUi();
-  const ui = loaded.BilposUI;
+  const ui = loaded.AnterajaUI;
   const document = loaded.context.document;
 
   ui.updateHeader({
@@ -467,7 +467,7 @@ test('updateHeader maps tournament header values safely', () => {
 
 test('emptyState returns the expected premium empty-state markup', () => {
   const loaded = loadUi();
-  const ui = loaded.BilposUI;
+  const ui = loaded.AnterajaUI;
 
   assert.match(ui.emptyState('participants'), /Belum Ada Peserta/);
   assert.match(ui.emptyState('bracket'), /Bracket Belum Dibuat/);
@@ -477,10 +477,10 @@ test('emptyState returns the expected premium empty-state markup', () => {
 
 test('activateNav switches active nav and closes sidebar on mobile', () => {
   const loaded = loadUi();
-  const ui = loaded.BilposUI;
+  const ui = loaded.AnterajaUI;
   const context = loaded.context;
   const document = context.document;
-  const sidebar = document.querySelector('.bilpos-sidebar');
+  const sidebar = document.querySelector('.anteraja-sidebar');
   const overlay = document.querySelector('.sidebar-overlay');
 
   sidebar.classList.add('open');
@@ -498,9 +498,9 @@ test('activateNav switches active nav and closes sidebar on mobile', () => {
 
 test('toggleSidebar and closeSidebar manage sidebar visibility safely', () => {
   const loaded = loadUi();
-  const ui = loaded.BilposUI;
+  const ui = loaded.AnterajaUI;
   const document = loaded.context.document;
-  const sidebar = document.querySelector('.bilpos-sidebar');
+  const sidebar = document.querySelector('.anteraja-sidebar');
   const overlay = document.querySelector('.sidebar-overlay');
 
   ui.toggleSidebar();
@@ -514,7 +514,7 @@ test('toggleSidebar and closeSidebar manage sidebar visibility safely', () => {
 
 test('showLoading and hideLoading manage skeleton placeholders', () => {
   const loaded = loadUi();
-  const ui = loaded.BilposUI;
+  const ui = loaded.AnterajaUI;
   const document = loaded.context.document;
   const container = document.getElementById('loading-target');
 
@@ -530,7 +530,7 @@ test('showLoading and hideLoading manage skeleton placeholders', () => {
 
 test('rippleEffect adds a ripple element at the click point and removes it', async () => {
   const loaded = loadUi();
-  const ui = loaded.BilposUI;
+  const ui = loaded.AnterajaUI;
   const document = loaded.context.document;
   const button = createElement(document, 'button', {
     clientWidth: 140,

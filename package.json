@@ -1,7 +1,7 @@
 {
-  "name": "bilpos-project",
+  "name": "anteraja-project",
   "version": "1.0.0",
-  "description": "Professional billiard tournament management software for Billiard Positif.",
+  "description": "Professional billiard tournament management software for Anteraja Club Billiard.",
   "main": "playwright.config.js",
   "directories": {
     "doc": "docs",

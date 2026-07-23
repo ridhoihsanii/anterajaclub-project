@@ -21,8 +21,8 @@ test('E2E: add Budi and verify bracket updates realtime', async ({ page }) => {
   await page.waitForTimeout(800);
 
   // debug: log storage contents to help diagnose
-  const partsRaw = await page.evaluate(() => localStorage.getItem('bilpos_participants'));
-  const bracketRaw = await page.evaluate(() => localStorage.getItem('bilpos_bracket'));
+  const partsRaw = await page.evaluate(() => localStorage.getItem('anteraja_participants'));
+  const bracketRaw = await page.evaluate(() => localStorage.getItem('anteraja_bracket'));
   console.log('PARTICIPANTS:', partsRaw);
   console.log('BRACKET:', bracketRaw ? bracketRaw.slice(0, 200) + '...' : null);
 

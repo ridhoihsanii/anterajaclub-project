@@ -63,7 +63,7 @@
     return candidate && candidate.id != null && String(candidate.id) === String(participantId);
   }
 
-  var BilposTournament = {
+  var AnterajaTournament = {
     calcRounds: function (size) {
       var normalizedSize = toNumber(size);
 
@@ -210,17 +210,17 @@
               match.status = 'done';
               match.winner = null;
               var byeAdvance = { id: null, name: 'BYE', hc: '', drawingNumber: null };
-              BilposTournament.advanceWinner(bracket, roundIdx, matchIdx, byeAdvance);
+              AnterajaTournament.advanceWinner(bracket, roundIdx, matchIdx, byeAdvance);
               changed = true;
             } else if (p1IsBye && match.p2 && match.p2.name !== 'BYE') {
               match.winner = match.p2;
               match.status = 'done';
-              BilposTournament.advanceWinner(bracket, roundIdx, matchIdx, match.p2);
+              AnterajaTournament.advanceWinner(bracket, roundIdx, matchIdx, match.p2);
               changed = true;
             } else if (p2IsBye && match.p1 && match.p1.name !== 'BYE') {
               match.winner = match.p1;
               match.status = 'done';
-              BilposTournament.advanceWinner(bracket, roundIdx, matchIdx, match.p1);
+              AnterajaTournament.advanceWinner(bracket, roundIdx, matchIdx, match.p1);
               changed = true;
             }
           });
@@ -315,6 +315,6 @@
   };
 
   if (typeof window !== 'undefined') {
-    window.BilposTournament = BilposTournament;
+    window.AnterajaTournament = AnterajaTournament;
   }
 })();

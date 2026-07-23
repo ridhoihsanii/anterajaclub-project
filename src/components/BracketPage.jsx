@@ -32,7 +32,7 @@ function deepClone(obj) {
 }
 
 function loadInitialState() {
-  var storage      = window.BilposStorage;
+  var storage      = window.AnterajaStorage;
   var tournament_  = (storage && storage.loadTournament())  || { size: 32 };
   var participants = (storage && storage.loadParticipants()) || [];
   var saved        = storage && storage.loadBracket();
@@ -58,8 +58,8 @@ function loadInitialState() {
   }
 
   if (!bracket) {
-    bracket = window.BilposTournament
-      ? window.BilposTournament.generateBracket(size, [])
+    bracket = window.AnterajaTournament
+      ? window.AnterajaTournament.generateBracket(size, [])
       : { rounds: [], size: size, generatedAt: Date.now() };
   }
 
@@ -72,7 +72,7 @@ export default function BracketPage() {
   // Re-read storage when participants/tournament storage keys change (cross-tab)
   useEffect(function() {
     function onStorage(e) {
-      if (e.key === 'bilpos_participants' || e.key === 'bilpos_tournament') {
+      if (e.key === 'anteraja_participants' || e.key === 'anteraja_tournament') {
         setState(loadInitialState());
       }
     }
@@ -80,29 +80,29 @@ export default function BracketPage() {
     return function() { window.removeEventListener('storage', onStorage); };
   }, []);
 
-  // Re-read participants when app.js dispatches bilpos:participants-updated (same tab)
+  // Re-read participants when app.js dispatches anteraja:participants-updated (same tab)
   useEffect(function() {
     function onParticipantsUpdated() {
-      var storage = window.BilposStorage;
+      var storage = window.AnterajaStorage;
       var participants = (storage && storage.loadParticipants()) || [];
       setState(function(prev) {
         return { bracket: prev.bracket, liveMatchIds: prev.liveMatchIds, participants: participants };
       });
     }
-    window.addEventListener('bilpos:participants-updated', onParticipantsUpdated);
-    return function() { window.removeEventListener('bilpos:participants-updated', onParticipantsUpdated); };
+    window.addEventListener('anteraja:participants-updated', onParticipantsUpdated);
+    return function() { window.removeEventListener('anteraja:participants-updated', onParticipantsUpdated); };
   }, []);
 
-  // Re-read storage when bracket nav tab is clicked (bilpos:bracket-activated event)
+  // Re-read storage when bracket nav tab is clicked (anteraja:bracket-activated event)
   useEffect(function() {
     function onActivated() { setState(loadInitialState()); }
-    window.addEventListener('bilpos:bracket-activated', onActivated);
-    return function() { window.removeEventListener('bilpos:bracket-activated', onActivated); };
+    window.addEventListener('anteraja:bracket-activated', onActivated);
+    return function() { window.removeEventListener('anteraja:bracket-activated', onActivated); };
   }, []);
 
   var saveState = useCallback(function(newBracket, newLiveMatchIds) {
-    if (window.BilposStorage) {
-      window.BilposStorage.saveBracket({
+    if (window.AnterajaStorage) {
+      window.AnterajaStorage.saveBracket({
         bracket:      newBracket,
         liveMatchIds: Array.from(newLiveMatchIds),
       });
@@ -133,10 +133,10 @@ export default function BracketPage() {
           cascadeClearWinnerMut(newBracket, roundIdx, matchIdx);
         }
         // Advance the new winner (or nothing if newWinner is null)
-        if (newWinner && window.BilposTournament) {
+        if (newWinner && window.AnterajaTournament) {
           // Enrich winner with full participant data (preserves hcCustom)
           var fullWinner = prev.participants.find(function(p) { return String(p.id) === String(newWinner.id); }) || newWinner;
-          window.BilposTournament.advanceWinner(newBracket, roundIdx, matchIdx, fullWinner);
+          window.AnterajaTournament.advanceWinner(newBracket, roundIdx, matchIdx, fullWinner);
         }
       }
 
@@ -190,17 +190,17 @@ export default function BracketPage() {
         var byeWinner = prev.participants.find(function(p) { return String(p.id) === String(p1.id); }) || p1;
         match.winner = byeWinner;
         match.status = 'done';
-        if (window.BilposTournament) window.BilposTournament.advanceWinner(newBracket, 0, matchIdx, byeWinner);
+        if (window.AnterajaTournament) window.AnterajaTournament.advanceWinner(newBracket, 0, matchIdx, byeWinner);
       } else if (!p1IsReal && p2IsReal) {
         var byeWinner = prev.participants.find(function(p) { return String(p.id) === String(p2.id); }) || p2;
         match.winner = byeWinner;
         match.status = 'done';
-        if (window.BilposTournament) window.BilposTournament.advanceWinner(newBracket, 0, matchIdx, byeWinner);
+        if (window.AnterajaTournament) window.AnterajaTournament.advanceWinner(newBracket, 0, matchIdx, byeWinner);
       } else if (!p1IsReal && !p2IsReal && (p1IsBye || p2IsBye)) {
         // BYE vs BYE (or BYE vs null) — advance BYE to next round
         match.winner = BYE_PARTICIPANT;
         match.status = 'done';
-        if (window.BilposTournament) window.BilposTournament.advanceWinner(newBracket, 0, matchIdx, BYE_PARTICIPANT);
+        if (window.AnterajaTournament) window.AnterajaTournament.advanceWinner(newBracket, 0, matchIdx, BYE_PARTICIPANT);
       }
 
       saveState(newBracket, prev.liveMatchIds);
@@ -241,8 +241,8 @@ export default function BracketPage() {
   const rounds = state.bracket?.rounds ?? [];
   const totalRounds = rounds.length;
   const roundLabels = rounds.map((_, i) =>
-    window.BilposTournament
-      ? window.BilposTournament.getRoundLabel(i, totalRounds)
+    window.AnterajaTournament
+      ? window.AnterajaTournament.getRoundLabel(i, totalRounds)
       : String(i + 1)
   );
 

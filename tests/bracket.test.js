@@ -298,13 +298,13 @@ function buildContext() {
   };
 
   window.requestAnimationFrame = context.requestAnimationFrame;
-  window.BilposUI = {
+  window.AnterajaUI = {
     emptyState(type) {
       return type === 'bracket' ? '<div>empty bracket</div>' : '';
     }
   };
-  context.BilposUI = window.BilposUI;
-  window.BilposTournament = {
+  context.AnterajaUI = window.AnterajaUI;
+  window.AnterajaTournament = {
     getRoundLabel(roundIndex, totalRounds) {
       if (roundIndex === totalRounds - 1) {
         return 'FINAL';
@@ -317,7 +317,7 @@ function buildContext() {
       return 'ROUND ' + (roundIndex + 1);
     }
   };
-  context.BilposTournament = window.BilposTournament;
+  context.AnterajaTournament = window.AnterajaTournament;
 
   return context;
 }
@@ -365,7 +365,7 @@ function loadBracket() {
 
   return {
     context: context,
-    BilposBracket: context.window.BilposBracket
+    AnterajaBracket: context.window.AnterajaBracket
   };
 }
 
@@ -445,14 +445,14 @@ function createBracketFixture() {
   };
 }
 
-test('BilposBracket exposes the required public API', () => {
+test('AnterajaBracket exposes the required public API', () => {
   const bracketPath = path.join(process.cwd(), 'assets', 'js', 'bracket.js');
   assert.ok(fs.existsSync(bracketPath), 'assets/js/bracket.js should exist');
 
   const loaded = loadBracket();
-  const api = loaded.BilposBracket;
+  const api = loaded.AnterajaBracket;
 
-  assert.ok(api, 'window.BilposBracket should be defined');
+  assert.ok(api, 'window.AnterajaBracket should be defined');
   ['render', 'renderMatchCard', 'drawConnectors', 'setZoom', 'toggleFullscreen', 'centerBracket'].forEach((method) => {
     assert.equal(typeof api[method], 'function', method + ' should be a function');
   });
@@ -462,7 +462,7 @@ test('BilposBracket exposes the required public API', () => {
 
 test('render shows empty state for a missing bracket', () => {
   const loaded = loadBracket();
-  const api = loaded.BilposBracket;
+  const api = loaded.AnterajaBracket;
   const container = createElement(loaded.context.document, 'div');
 
   api.render(null, container);
@@ -470,18 +470,18 @@ test('render shows empty state for a missing bracket', () => {
   assert.equal(container.innerHTML, '<div>empty bracket</div>');
 });
 
-test('render falls back safely when BilposUI or BilposTournament globals are unavailable', () => {
+test('render falls back safely when AnterajaUI or AnterajaTournament globals are unavailable', () => {
   const loaded = loadBracket();
-  const api = loaded.BilposBracket;
+  const api = loaded.AnterajaBracket;
   const document = loaded.context.document;
   const emptyContainer = createElement(document, 'div');
   const bracketContainer = createElement(document, 'div');
   const bracket = createBracketFixture();
 
-  delete loaded.context.BilposUI;
-  delete loaded.context.BilposTournament;
-  delete loaded.context.window.BilposUI;
-  delete loaded.context.window.BilposTournament;
+  delete loaded.context.AnterajaUI;
+  delete loaded.context.AnterajaTournament;
+  delete loaded.context.window.AnterajaUI;
+  delete loaded.context.window.AnterajaTournament;
 
   api.render(null, emptyContainer);
   api.render(bracket, bracketContainer);
@@ -498,7 +498,7 @@ test('render falls back safely when BilposUI or BilposTournament globals are una
 
 test('render builds horizontal rounds, match cards, and match states', () => {
   const loaded = loadBracket();
-  const api = loaded.BilposBracket;
+  const api = loaded.AnterajaBracket;
   const document = loaded.context.document;
   const container = createElement(document, 'div');
   const bracket = createBracketFixture();
@@ -537,7 +537,7 @@ test('render builds horizontal rounds, match cards, and match states', () => {
 
 test('drawConnectors creates L-shaped SVG paths between adjacent rounds', () => {
   const loaded = loadBracket();
-  const api = loaded.BilposBracket;
+  const api = loaded.AnterajaBracket;
   const document = loaded.context.document;
   const container = createElement(document, 'div');
   const bracket = createBracketFixture();
@@ -566,7 +566,7 @@ test('source removes readonly offset writes and duplicate content-height calls',
 
 test('setZoom, toggleFullscreen, and centerBracket update UI helpers safely', () => {
   const loaded = loadBracket();
-  const api = loaded.BilposBracket;
+  const api = loaded.AnterajaBracket;
   const document = loaded.context.document;
   const container = createElement(document, 'div');
   const wrapper = createElement(document, 'div', { className: 'bracket-wrapper' });

@@ -16,9 +16,9 @@ async function setupBracket(page, size) {
         status: '',
       });
     }
-    localStorage.setItem('bilpos_tournament', JSON.stringify({ size: sz, status: 'setup', currentRound: 0 }));
-    localStorage.setItem('bilpos_participants', JSON.stringify(participants));
-    localStorage.removeItem('bilpos_bracket');
+    localStorage.setItem('anteraja_tournament', JSON.stringify({ size: sz, status: 'setup', currentRound: 0 }));
+    localStorage.setItem('anteraja_participants', JSON.stringify(participants));
+    localStorage.removeItem('anteraja_bracket');
   }, size);
   await page.reload();
 }
@@ -157,9 +157,9 @@ test.describe('React Bracket Module', () => {
     await page.goto('/index.html');
     await page.evaluate(function() {
       // size: 1 causes generateBracket to return empty rounds, triggering the empty state
-      localStorage.setItem('bilpos_tournament', JSON.stringify({ size: 1 }));
-      localStorage.removeItem('bilpos_participants');
-      localStorage.removeItem('bilpos_bracket');
+      localStorage.setItem('anteraja_tournament', JSON.stringify({ size: 1 }));
+      localStorage.removeItem('anteraja_participants');
+      localStorage.removeItem('anteraja_bracket');
     });
     await page.reload();
     await page.click('[data-section="bracket"]');

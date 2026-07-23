@@ -1,4 +1,4 @@
-// Playwright config for Bilpos E2E smoke tests
+// Playwright config for Anteraja E2E smoke tests
 /** @type {import('@playwright/test').PlaywrightTestConfig} */
 module.exports = {
   testDir: 'tests',

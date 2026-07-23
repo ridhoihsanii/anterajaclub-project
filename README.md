@@ -1,6 +1,6 @@
-# BILPOS — Billiard Positif Tournament System
+# ANTERAJA — Anteraja Club Billiard Tournament System
 
-Professional billiard tournament management software for Billiard Positif.
+Professional billiard tournament management software for Anteraja Club Billiard.
 
 ![Pure Frontend](https://img.shields.io/badge/Pure%20Frontend-HTML%2FCSS%2FJS-FACC15?style=for-the-badge&labelColor=0A0A0A)
 ![No Backend](https://img.shields.io/badge/No%20Backend-Local%20Only-FACC15?style=for-the-badge&labelColor=0A0A0A)
@@ -23,7 +23,7 @@ Professional billiard tournament management software for Billiard Positif.
 - Print bracket functionality
 - LocalStorage persistence with auto-save on refresh
 - Responsive mobile-friendly design
-- Glassmorphism Bilpos Yellow & Black premium UI
+- Glassmorphism Anteraja Yellow & Black premium UI
 - Zoom controls for 75%, 100%, 125%, and 150%, plus fullscreen bracket mode
 
 ## Screenshots
@@ -42,11 +42,11 @@ Professional billiard tournament management software for Billiard Positif.
 ## Project Structure
 
 ```text
-bilpos-project/
+anterajaclub-project/
 ├── index.html              # Main application shell
 ├── assets/
 │   ├── css/
-│   │   └── style.css       # Bilpos design system
+│   │   └── style.css       # Anteraja design system
 │   ├── js/
 │   │   ├── storage.js      # LocalStorage layer
 │   │   ├── drawing.js      # Drawing/slot system
@@ -71,7 +71,7 @@ bilpos-project/
 This repository includes an automated GitHub Actions workflow that builds and deploys the site to GitHub Pages on every push to `main`.
 
 1. Push the project to a GitHub repository (already done).
-2. Workflow will run and publish to Pages. The site is expected at `https://<your-username>.github.io/bilpos-project/`.
+2. Workflow will run and publish to Pages. The site is expected at `https://<your-username>.github.io/anterajaclub-project/`.
 3. If Pages shows 404, wait ~1–2 minutes for provisioning, or check Actions → Workflows for build logs.
 ## Usage Guide
 
@@ -84,7 +84,7 @@ This repository includes an automated GitHub Actions workflow that builds and de
 
 ## Branding
 
-BILPOS follows the **BILLIARD POSITIF** visual identity with a premium yellow and black color scheme, centered on **#FACC15** and **#0A0A0A** for a strong, modern tournament presentation.
+ANTERAJA follows the **ANTERAJA CLUB BILLIARD** visual identity with a premium yellow and black color scheme, centered on **#FACC15** and **#0A0A0A** for a strong, modern tournament presentation.
 
 ---
 

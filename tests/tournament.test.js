@@ -15,11 +15,11 @@ function loadTournament() {
   vm.createContext(context);
   vm.runInContext(source, context);
 
-  return context.window.BilposTournament;
+  return context.window.AnterajaTournament;
 }
 
 test('autoAdvanceByes resolves cascading double-BYE matches in later rounds', () => {
-  const BilposTournament = loadTournament();
+  const AnterajaTournament = loadTournament();
   const bye = function (drawingNumber) {
     return { id: null, name: 'BYE', hc: '', drawingNumber: drawingNumber };
   };
@@ -38,7 +38,7 @@ test('autoAdvanceByes resolves cascading double-BYE matches in later rounds', ()
     ]
   };
 
-  BilposTournament.autoAdvanceByes(bracket);
+  AnterajaTournament.autoAdvanceByes(bracket);
 
   assert.equal(bracket.rounds[1][0].status, 'done');
   assert.equal(bracket.rounds[1][0].p1.name, 'BYE');

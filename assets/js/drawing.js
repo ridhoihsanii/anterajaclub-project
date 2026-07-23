@@ -29,7 +29,7 @@
     return String(leftPhone == null ? '' : leftPhone).trim() === String(rightPhone == null ? '' : rightPhone).trim();
   }
 
-  var BilposDrawing = {
+  var AnterajaDrawing = {
     generatePool: function (size) {
       var normalizedSize = toPositiveInt(size);
       var pool = [];
@@ -217,6 +217,6 @@
   };
 
   if (typeof window !== 'undefined') {
-    window.BilposDrawing = BilposDrawing;
+    window.AnterajaDrawing = AnterajaDrawing;
   }
 })();

@@ -310,7 +310,7 @@
       return row;
     }
 
-  var BilposBracket = {
+  var AnterajaBracket = {
     currentZoom: 100,
 
     render: function (bracket, container) {
@@ -326,7 +326,7 @@
       container.innerHTML = '';
 
       if (!bracket || !Array.isArray(bracket.rounds) || bracket.rounds.length === 0) {
-        container.innerHTML = typeof BilposUI !== 'undefined' ? BilposUI.emptyState('bracket') : '<div class="empty-state"><div class="empty-icon">🏆</div><h5>Bracket Belum Dibuat</h5></div>';
+        container.innerHTML = typeof AnterajaUI !== 'undefined' ? AnterajaUI.emptyState('bracket') : '<div class="empty-state"><div class="empty-icon">🏆</div><h5>Bracket Belum Dibuat</h5></div>';
         return null;
       }
 
@@ -372,15 +372,15 @@
         // Round label (e.g., ROUND 1, SEMI FINAL, FINAL)
         try {
           var roundLabelText = 'Round ' + (roundIndex + 1);
-          if (typeof BilposTournament !== 'undefined' && typeof BilposTournament.getRoundLabel === 'function') {
-            roundLabelText = BilposTournament.getRoundLabel(roundIndex, totalRounds);
+          if (typeof AnterajaTournament !== 'undefined' && typeof AnterajaTournament.getRoundLabel === 'function') {
+            roundLabelText = AnterajaTournament.getRoundLabel(roundIndex, totalRounds);
           }
           var roundLabel = createElement('div', 'bracket-round-label', roundLabelText);
           roundLabel.style.position = 'absolute';
           roundLabel.style.top = '8px';
           roundLabel.style.left = '12px';
           roundLabel.style.fontWeight = '800';
-          roundLabel.style.color = 'var(--bilpos-yellow)';
+          roundLabel.style.color = 'var(--anteraja-yellow)';
           roundLabel.style.fontSize = '0.9rem';
           roundColumn.appendChild(roundLabel);
         } catch (err) {}
@@ -395,7 +395,7 @@
               labelA.style.position = 'absolute';
               labelA.style.left = '8px';
               labelA.style.top = '8px';
-              labelA.style.color = 'var(--bilpos-yellow)';
+              labelA.style.color = 'var(--anteraja-yellow)';
               labelA.style.fontWeight = '800';
               labelA.style.fontSize = '0.9rem';
               roundColumn.appendChild(labelA);
@@ -405,7 +405,7 @@
               labelB.style.position = 'absolute';
               labelB.style.left = '8px';
               labelB.style.top = '8px';
-              labelB.style.color = 'var(--bilpos-yellow)';
+              labelB.style.color = 'var(--anteraja-yellow)';
               labelB.style.fontWeight = '800';
               labelB.style.fontSize = '0.9rem';
               roundColumn.appendChild(labelB);
@@ -429,7 +429,7 @@
 
       if (typeof requestAnimationFrame === 'function') {
         requestAnimationFrame(function () {
-          BilposBracket.drawConnectors(wrapper);
+          AnterajaBracket.drawConnectors(wrapper);
         });
       } else {
         this.drawConnectors(wrapper);
@@ -699,6 +699,6 @@
   }
 
   if (typeof window !== 'undefined') {
-    window.BilposBracket = BilposBracket;
+    window.AnterajaBracket = AnterajaBracket;
   }
 })();

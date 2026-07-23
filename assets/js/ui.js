@@ -66,7 +66,7 @@
     return wrapper;
   }
 
-  var BilposUI = {
+  var AnterajaUI = {
     showToast: function (message, type, duration) {
       var toastContainer = getElement('toast-container');
       var toast;
@@ -80,7 +80,7 @@
       }
 
       toast = document.createElement('div');
-      toast.className = 'bilpos-toast toast-' + toastType;
+      toast.className = 'anteraja-toast toast-' + toastType;
 
       icon = document.createElement('i');
       icon.className = 'fa ' + TOAST_ICONS[toastType];
@@ -182,7 +182,7 @@
     updateHeader: function (tournament) {
       tournament = tournament || {};
 
-      safeText(getElement('header-venue'), tournament.venue || 'BILLIARD POSITIF');
+      safeText(getElement('header-venue'), tournament.venue || 'ANTERAJA CLUB BILLIARD');
       safeText(getElement('header-status'), STATUS_LABELS[tournament.status] || STATUS_LABELS.setup);
       safeText(
         getElement('header-round'),
@@ -202,7 +202,7 @@
 
     activateNav: function (sectionId) {
       var navItems = findAll('.sidebar-nav-item');
-      var sections = findAll('.bilpos-section');
+      var sections = findAll('.anteraja-section');
       var activeNav = findOne('.sidebar-nav-item[data-section="' + sectionId + '"]');
       var activeSection = getElement('section-' + sectionId);
       var index;
@@ -241,7 +241,7 @@
     },
 
     toggleSidebar: function () {
-      var sidebar = findOne('.bilpos-sidebar');
+      var sidebar = findOne('.anteraja-sidebar');
       var overlay = findOne('.sidebar-overlay');
 
       if (sidebar && sidebar.classList) {
@@ -254,7 +254,7 @@
     },
 
     closeSidebar: function () {
-      var sidebar = findOne('.bilpos-sidebar');
+      var sidebar = findOne('.anteraja-sidebar');
       var overlay = findOne('.sidebar-overlay');
 
       if (sidebar && sidebar.classList) {
@@ -335,6 +335,6 @@
   };
 
   if (typeof window !== 'undefined') {
-    window.BilposUI = BilposUI;
+    window.AnterajaUI = AnterajaUI;
   }
 })();

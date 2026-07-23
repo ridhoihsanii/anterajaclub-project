@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <!-- Allow pinch-to-zoom on mobile -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-  <title>Bracket Preview — BILPOS Tournament</title>
+  <title>Bracket Preview — Anteraja Tournament</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
@@ -14,10 +14,10 @@
   <script>
     firebase.initializeApp({
       apiKey:            'AIzaSyA6h6oCHrKixtZMEyqufpaZsaBrdrtBL1Y',
-      authDomain:        'bilpos-tournament.firebaseapp.com',
-      databaseURL:       'https://bilpos-tournament-default-rtdb.firebaseio.com',
-      projectId:         'bilpos-tournament',
-      storageBucket:     'bilpos-tournament.firebasestorage.app',
+      authDomain:        'anteraja-tournament.firebaseapp.com',
+      databaseURL:       'https://anteraja-tournament-default-rtdb.firebaseio.com',
+      projectId:         'anteraja-tournament',
+      storageBucket:     'anteraja-tournament.firebasestorage.app',
       messagingSenderId: '1016029844462',
       appId:             '1:1016029844462:web:159e221b47c584eed0b4ff'
     });
@@ -363,7 +363,7 @@
   <div class="preview-brand">
     <span>🏆</span>
     <div>
-      <div id="preview-title">BILPOS Tournament</div>
+      <div id="preview-title">ANTERAJA Tournament</div>
       <div class="sub">Bracket Preview</div>
     </div>
   </div>
@@ -765,7 +765,7 @@ function initQR() {
   if (fitBtn) fitBtn.addEventListener('click', autoFit);
 
   // Expose for real-time re-render
-  window.__bilposAutoFit = autoFit;
+  window.__anterajaAutoFit = autoFit;
 
   // Auto-fit on load
   setTimeout(autoFit, 250);
@@ -793,14 +793,14 @@ function initQR() {
   /* ── Helper: terapkan data bracket ke halaman ── */
   function applyPayload(data) {
     if (!data) return;
-    var title = (data.tournament && (data.tournament.venue || data.tournament.name)) || 'BILPOS Tournament';
+    var title = (data.tournament && (data.tournament.venue || data.tournament.name)) || 'ANTERAJA Tournament';
     document.getElementById('preview-title').textContent = title;
     document.title = title + ' — Bracket Preview';
     var root = document.getElementById('bracket-root');
     root.innerHTML = '';
     var ids = Array.isArray(data.liveMatchIds) ? data.liveMatchIds : [];
     renderBracket(data.bracket, ids);
-    if (typeof window.__bilposAutoFit === 'function') setTimeout(window.__bilposAutoFit, 100);
+    if (typeof window.__anterajaAutoFit === 'function') setTimeout(window.__anterajaAutoFit, 100);
   }
 
   /* ── Mode 1: Firebase — URL pendek, real-time cross-device ── */
@@ -858,7 +858,7 @@ function initQR() {
 
   // Same-browser real-time via storage event (hash mode)
   window.addEventListener('storage', function(e) {
-    if (e.key !== 'bilpos_bracket' || !e.newValue) return;
+    if (e.key !== 'anteraja_bracket' || !e.newValue) return;
     try {
       var data = JSON.parse(e.newValue);
       if (!data || !data.bracket) return;

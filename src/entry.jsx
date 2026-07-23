@@ -19,13 +19,13 @@ if (document.readyState === 'loading') {
   mountBracket();
 }
 
-// Fire bilpos:bracket-activated when the Bracket nav tab is clicked so
-// BracketPage can re-read fresh participant data from BilposStorage.
+// Fire anteraja:bracket-activated when the Bracket nav tab is clicked so
+// BracketPage can re-read fresh participant data from AnterajaStorage.
 document.addEventListener('DOMContentLoaded', function() {
   var navItem = document.querySelector('.sidebar-nav-item[data-section="bracket"]');
   if (navItem) {
     navItem.addEventListener('click', function() {
-      window.dispatchEvent(new CustomEvent('bilpos:bracket-activated'));
+      window.dispatchEvent(new CustomEvent('anteraja:bracket-activated'));
     });
   }
 });

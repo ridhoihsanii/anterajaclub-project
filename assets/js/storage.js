@@ -1,13 +1,13 @@
-var BilposStorage = {
+var AnterajaStorage = {
   KEYS: {
-    TOURNAMENT: 'bilpos_tournament',
-    PARTICIPANTS: 'bilpos_participants',
-    BRACKET: 'bilpos_bracket',
-    SETTINGS: 'bilpos_settings'
+    TOURNAMENT: 'anteraja_tournament',
+    PARTICIPANTS: 'anteraja_participants',
+    BRACKET: 'anteraja_bracket',
+    SETTINGS: 'anteraja_settings'
   },
 
   DEFAULT_TOURNAMENT: {
-    venue: 'Billiard Positif',
+    venue: 'Anteraja Club Billiard',
     size: 32,
     status: 'setup',
     currentRound: 0,
@@ -37,7 +37,7 @@ var BilposStorage = {
       localStorage.setItem(key, JSON.stringify(value));
       return true;
     } catch (e) {
-      console.warn('BilposStorage write failed:', e.message);
+      console.warn('AnterajaStorage write failed:', e.message);
       return false;
     }
   },
@@ -186,5 +186,5 @@ var BilposStorage = {
 };
 
 if (typeof window !== 'undefined') {
-  window.BilposStorage = BilposStorage;
+  window.AnterajaStorage = AnterajaStorage;
 }

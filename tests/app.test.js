@@ -118,7 +118,7 @@ function loadApp() {
     window: window,
     document: document,
     console: console,
-    BilposStorage: {
+    AnterajaStorage: {
       loadParticipants: function () {
         return savedParticipant ? [savedParticipant] : [];
       },
@@ -129,7 +129,7 @@ function loadApp() {
         savedBracket = bracket;
       }
     },
-    BilposTournament: {
+    AnterajaTournament: {
       syncParticipantInBracket: function (bracket, participantId, name, hc) {
         syncCalls += 1;
         return {
@@ -140,16 +140,16 @@ function loadApp() {
         };
       }
     },
-    BilposUI: {
+    AnterajaUI: {
       showToast: function (message, type) {
         toastCalls.push({ message: message, type: type });
       }
     }
   };
 
-  window.BilposStorage = context.BilposStorage;
-  window.BilposTournament = context.BilposTournament;
-  window.BilposUI = context.BilposUI;
+  window.AnterajaStorage = context.AnterajaStorage;
+  window.AnterajaTournament = context.AnterajaTournament;
+  window.AnterajaUI = context.AnterajaUI;
 
   const appPath = path.join(process.cwd(), 'assets', 'js', 'app.js');
   const source = fs.readFileSync(appPath, 'utf8');
@@ -157,7 +157,7 @@ function loadApp() {
   vm.runInContext(source, context);
 
   return {
-    BilposApp: context.window.BilposApp,
+    AnterajaApp: context.window.AnterajaApp,
     document: document,
     toastCalls: toastCalls,
     getSavedParticipant: function () {
@@ -205,7 +205,7 @@ function appendRowFixture(document, row, overrides) {
 
 test('saveParticipantRow renders bracket even when no bracket exists yet', () => {
   const loaded = loadApp();
-  const app = loaded.BilposApp;
+  const app = loaded.AnterajaApp;
   let renderBracketCalls = 0;
   let renderStatsCalls = 0;
 
@@ -236,7 +236,7 @@ test('saveParticipantRow renders bracket even when no bracket exists yet', () =>
 
 test('saveParticipantRow does not double-render when syncing an existing bracket', () => {
   const loaded = loadApp();
-  const app = loaded.BilposApp;
+  const app = loaded.AnterajaApp;
   let renderBracketCalls = 0;
   let renderStatsCalls = 0;
   const originalBracket = { rounds: [] };

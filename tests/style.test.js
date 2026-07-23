@@ -9,14 +9,14 @@ function readStyleSheet() {
   return fs.readFileSync(stylesheetPath, 'utf8');
 }
 
-test('style.css defines the Bilpos premium design tokens', () => {
+test('style.css defines the Anteraja premium design tokens', () => {
   const source = readStyleSheet();
 
   [
-    '--bilpos-yellow: #FACC15;',
-    '--bilpos-gold: #EAB308;',
-    '--bilpos-black: #0A0A0A;',
-    '--bilpos-surface-2: #222222;',
+    '--anteraja-yellow: #FACC15;',
+    '--anteraja-gold: #EAB308;',
+    '--anteraja-black: #0A0A0A;',
+    '--anteraja-surface-2: #222222;',
     '--shadow-yellow: 0 0 20px rgba(250,204,21,0.2);',
     '--transition: all 0.25s cubic-bezier(0.4,0,0.2,1);'
   ].forEach((token) => {
@@ -28,21 +28,21 @@ test('style.css includes premium layout, component, and responsive sections', ()
   const source = readStyleSheet();
 
   [
-    '.bilpos-header',
-    '.bilpos-sidebar',
-    '.bilpos-main',
-    '.bilpos-card',
+    '.anteraja-header',
+    '.anteraja-sidebar',
+    '.anteraja-main',
+    '.anteraja-card',
     '.stat-card',
-    '.btn-bilpos-primary',
+    '.btn-anteraja-primary',
     '.participant-table',
     '.bracket-container',
     '.match-card.match-live',
     '#toast-container',
-    '.bilpos-form-group',
+    '.anteraja-form-group',
     '.empty-state',
     '.skeleton-row',
     '.ripple',
-    '.bilpos-footer',
+    '.anteraja-footer',
     '.export-btn-group',
     '.settings-item',
     '.bracket-container:fullscreen',
@@ -58,7 +58,7 @@ test('style.css includes required interactive and animation details', () => {
 
   [
     'backdrop-filter: blur(20px);',
-    'background: linear-gradient(135deg, var(--bilpos-yellow) 0%, var(--bilpos-gold) 100%);',
+    'background: linear-gradient(135deg, var(--anteraja-yellow) 0%, var(--anteraja-gold) 100%);',
     'box-shadow: var(--shadow-yellow);',
     'position: sticky;',
     'animation: livePulse 2s ease-in-out infinite;',

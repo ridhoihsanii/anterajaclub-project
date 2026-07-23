@@ -185,27 +185,27 @@
     }
   };
 
-  window.BilposWheel = Wheel;
+  window.AnterajaWheel = Wheel;
 
   document.addEventListener('DOMContentLoaded', function(){
-    BilposWheel.init('wheel-canvas');
+    AnterajaWheel.init('wheel-canvas');
     // ensure SPIN label centered
     var spinBtn = document.getElementById('btn-spin-wheel'); if (spinBtn) spinBtn.textContent = 'SPIN';
 
     // build initial wheel based on current tournament size (embedded at page bottom)
     try {
-      var size = parseInt((window.BilposApp && window.BilposApp.tournament && window.BilposApp.tournament.size) || 32, 10);
-      BilposWheel.buildSegments(size);
+      var size = parseInt((window.AnterajaApp && window.AnterajaApp.tournament && window.AnterajaApp.tournament.size) || 32, 10);
+      AnterajaWheel.buildSegments(size);
     } catch (err) {}
 
     // ensure remove-selected hidden initially
     // spin button centered inside canvas
-    document.getElementById('btn-spin-wheel').addEventListener('click', function(){ BilposWheel.spin(); });
+    document.getElementById('btn-spin-wheel').addEventListener('click', function(){ AnterajaWheel.spin(); });
 
     // result modal controls
     var resultClose = document.getElementById('btn-close-result');
     if (resultClose) resultClose.addEventListener('click', function(){ var modal = document.getElementById('wheel-result-modal'); if (modal) { modal.classList.remove('active'); } });
     var resultDel = document.getElementById('btn-delete-result');
-        if (resultDel) resultDel.addEventListener('click', function(){ var modal = document.getElementById('wheel-result-modal'); if (!modal) return; var v = parseInt(modal.dataset.picked,10); var seg = BilposWheel.segments.find(function(s){ return s.value === v; }); if (seg) seg.removed = true; BilposWheel.render(); modal.classList.remove('active'); });
+        if (resultDel) resultDel.addEventListener('click', function(){ var modal = document.getElementById('wheel-result-modal'); if (!modal) return; var v = parseInt(modal.dataset.picked,10); var seg = AnterajaWheel.segments.find(function(s){ return s.value === v; }); if (seg) seg.removed = true; AnterajaWheel.render(); modal.classList.remove('active'); });
   });
 })();
