@@ -33,28 +33,23 @@
     }
   }
 
-  function getKnownHcValue(participant) {
-    var hcValues = ['HC 3B', 'HC 3N', 'HC 3A', 'HC 3+', 'custom'];
-    var hc = participant && participant.hc != null ? String(participant.hc) : '';
-    var hcCustom = participant && participant.hcCustom != null ? String(participant.hcCustom) : '';
-    if (hc === 'custom' || hcCustom) {
-      return 'custom';
-    }
-    if (hcValues.indexOf(hc) !== -1) {
-      return hc;
-    }
-    return hc ? 'custom' : '';
-  }
+  var DIVISI_VALUES = [
+    'Finance',
+    'Human Capital x E-Fullfilment',
+    'IT PMTI x Brand & Business Ecosystem',
+    'IT Development',
+    'IT Operation x IT Service & Project Coordination',
+    'BOMS',
+    'Sales, Growth and Customer Experience',
+    'Operation',
+    'BPRM x Internal Audit & Anti Fraud',
+    'Other'
+  ];
 
-  function getCustomHcValue(participant) {
-    if (!participant) {
-      return '';
-    }
-    if (participant.hcCustom != null && String(participant.hcCustom).trim()) {
-      return String(participant.hcCustom).trim();
-    }
-    if (participant.hc && ['HC 3B', 'HC 3N', 'HC 3A', 'HC 3+', 'custom'].indexOf(String(participant.hc)) === -1) {
-      return String(participant.hc);
+  function getKnownHcValue(participant) {
+    var hc = participant && participant.hc != null ? String(participant.hc) : '';
+    if (DIVISI_VALUES.indexOf(hc) !== -1) {
+      return hc;
     }
     return '';
   }
@@ -284,12 +279,10 @@
         var participant = participants[i - 1] || null;
         var name = participant && participant.name ? participant.name : '';
         var hcValue = getKnownHcValue(participant);
-        var hcCustom = getCustomHcValue(participant);
         var status = participant && participant.status ? participant.status : '';
         var rowClass = status === 'cash' ? 'row-paid-cash' : (status === 'tf' ? 'row-paid-tf' : '');
         var cashActive = status === 'cash' ? 'active' : '';
         var tfActive = status === 'tf' ? 'active' : '';
-        var customVisible = hcValue === 'custom' ? 'visible' : '';
 
         rows.push(
           '<tr id="row-' + i + '" data-row="' + i + '" data-current-status="' + escapeHtml(status) + '" class="' + rowClass + '">' +
@@ -309,14 +302,11 @@
             '</td>' +
             '<td>' +
               '<select class="table-select hc-select" data-row="' + i + '">' +
-                '<option value="">— HC —</option>' +
-                '<option value="HC 3B"' + (hcValue === 'HC 3B' ? ' selected' : '') + '>HC 3B</option>' +
-                '<option value="HC 3N"' + (hcValue === 'HC 3N' ? ' selected' : '') + '>HC 3N</option>' +
-                '<option value="HC 3A"' + (hcValue === 'HC 3A' ? ' selected' : '') + '>HC 3A</option>' +
-                '<option value="HC 3+"' + (hcValue === 'HC 3+' ? ' selected' : '') + '>HC 3+</option>' +
-                '<option value="custom"' + (hcValue === 'custom' ? ' selected' : '') + '>Custom HC</option>' +
+                '<option value="">— Pilih Divisi —</option>' +
+                DIVISI_VALUES.map(function (divisi) {
+                  return '<option value="' + escapeHtml(divisi) + '"' + (hcValue === divisi ? ' selected' : '') + '>' + escapeHtml(divisi) + '</option>';
+                }).join('') +
               '</select>' +
-              '<input type="text" class="hc-custom-input ' + customVisible + '" data-row="' + i + '" placeholder="Tulis HC..." value="' + escapeHtml(hcCustom) + '" maxlength="20"/>' +
             '</td>' +
             '<td>' +
               '<button class="btn-delete-row btn-export" data-row="' + i + '"><i class="fas fa-trash"></i></button>' +
@@ -326,13 +316,6 @@
       }
 
       tbody.innerHTML = rows.join('');
-
-      for (i = 1; i <= size; i += 1) {
-        var customInput = document.querySelector('.hc-custom-input[data-row="' + i + '"]');
-        if (customInput && !customInput.classList.contains('visible')) {
-          customInput.style.display = 'none';
-        }
-      }
     },
 
     renderStats: function () {
@@ -434,20 +417,6 @@
           }
         });
 
-        participantTbody.addEventListener('change', function (e) {
-          if (!e.target.classList.contains('hc-select')) return;
-          var rowIndex = e.target.dataset.row;
-          var customInput = document.querySelector('.hc-custom-input[data-row="' + rowIndex + '"]');
-          if (customInput) {
-            if (e.target.value === 'custom') {
-              customInput.classList.add('visible');
-              customInput.style.display = 'block';
-            } else {
-              customInput.classList.remove('visible');
-              customInput.style.display = 'none';
-            }
-          }
-        });
       }
 
       var participantSearch = getElement('participant-search');
@@ -466,7 +435,7 @@
       if (participantTbodyEl) {
         participantTbodyEl.addEventListener('input', function (e) {
           var t = e.target;
-          if (t.matches('.name-input') || t.matches('.hc-custom-input') || t.matches('.hc-select')) {
+          if (t.matches('.name-input') || t.matches('.hc-select')) {
             var rowIndex = parseInt(t.dataset.row, 10);
             setTimeout(function () { self.saveParticipantRow(rowIndex); }, 140);
           }
@@ -607,11 +576,8 @@
       for (i = 1; i <= size; i += 1) {
         var name = document.querySelector('.name-input[data-row="' + i + '"]');
         var hcSelectEl = document.querySelector('.hc-select[data-row="' + i + '"]');
-        var hcCustomEl = document.querySelector('.hc-custom-input[data-row="' + i + '"]');
         var rowEl = getElement('row-' + i);
-        var hcValue = hcSelectEl ? hcSelectEl.value : '';
-        var hcCustom = hcCustomEl ? hcCustomEl.value.trim() : '';
-        var hc = hcValue === 'custom' ? hcCustom : hcValue;
+        var hc = hcSelectEl ? hcSelectEl.value : '';
         var existingParticipant = (this.participants || []).find(function (p) { return p && p.id === 'row-' + i; });
         var phoneValue = existingParticipant ? (existingParticipant.phone || '') : '';
         rows.push({
@@ -620,7 +586,7 @@
           phone: phoneValue,
           name: name ? name.value.trim() : '',
           hc: hc,
-          hcCustom: hcValue === 'custom' ? hcCustom : '',
+          hcCustom: '',
           status: rowEl ? rowEl.dataset.currentStatus || '' : '',
           _sourceRow: i
         });
@@ -687,7 +653,7 @@
           'No': i + 1,
           'Nama': p.name || '',
           'No. HP': p.phone || '',
-          'HC': p.hc || '',
+          'Divisi': p.hc || '',
           'Status Bayar': p.status || ''
         };
       });
@@ -719,7 +685,7 @@
               slot: i + 1,
               phone: String(row['No. HP'] || ''),
               name: String(row['Nama'] || ''),
-              hc: String(row['HC'] || ''),
+              hc: String(row['Divisi'] || row['HC'] || ''),
               status: String(row['Status Bayar'] || '')
             };
             AnterajaStorage.saveParticipant(p);
@@ -737,10 +703,7 @@
       rowIndex = parseInt(rowIndex, 10);
       var name = document.querySelector('.name-input[data-row="' + rowIndex + '"]') && document.querySelector('.name-input[data-row="' + rowIndex + '"]').value.trim() || '';
       var hcSelectEl = document.querySelector('.hc-select[data-row="' + rowIndex + '"]');
-      var hcCustomEl = document.querySelector('.hc-custom-input[data-row="' + rowIndex + '"]');
-      var hcValue = hcSelectEl && hcSelectEl.value || '';
-      var hcCustom = hcCustomEl && hcCustomEl.value.trim() || '';
-      var hc = hcValue === 'custom' ? hcCustom : hcValue;
+      var hc = hcSelectEl && hcSelectEl.value || '';
       var row = getElement('row-' + rowIndex);
       var status = row && row.dataset.currentStatus || '';
       var existingParticipant = (this.participants || []).find(function (p) { return p && p.id === 'row-' + rowIndex; });
@@ -753,7 +716,7 @@
         phone: phone,
         name: name,
         hc: hc,
-        hcCustom: hcValue === 'custom' ? hcCustom : '',
+        hcCustom: '',
         status: status
       };
 

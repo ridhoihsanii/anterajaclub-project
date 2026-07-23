@@ -10,12 +10,7 @@
 
   function cloneParticipant(participant, drawingNumber) {
     if (!participant) {
-      return {
-        id: null,
-        name: 'BYE',
-        hc: '',
-        drawingNumber: drawingNumber
-      };
+      return null;
     }
 
     return {
@@ -200,24 +195,22 @@
         bracket.rounds.forEach(function (round, roundIdx) {
           round.forEach(function (match, matchIdx) {
             if (match.status === 'done') return;
-            
-            var p1IsBye = match.p1 && match.p1.name === 'BYE';
-            var p2IsBye = match.p2 && match.p2.name === 'BYE';
-            var p1IsNull = !match.p1;
-            var p2IsNull = !match.p2;
-            
+
+            var p1IsBye = isBye(match.p1);
+            var p2IsBye = isBye(match.p2);
+
             if (p1IsBye && p2IsBye) {
               match.status = 'done';
               match.winner = null;
               var byeAdvance = { id: null, name: 'BYE', hc: '', drawingNumber: null };
               AnterajaTournament.advanceWinner(bracket, roundIdx, matchIdx, byeAdvance);
               changed = true;
-            } else if (p1IsBye && match.p2 && match.p2.name !== 'BYE') {
+            } else if (p1IsBye && !p2IsBye && match.p2) {
               match.winner = match.p2;
               match.status = 'done';
               AnterajaTournament.advanceWinner(bracket, roundIdx, matchIdx, match.p2);
               changed = true;
-            } else if (p2IsBye && match.p1 && match.p1.name !== 'BYE') {
+            } else if (p2IsBye && !p1IsBye && match.p1) {
               match.winner = match.p1;
               match.status = 'done';
               AnterajaTournament.advanceWinner(bracket, roundIdx, matchIdx, match.p1);

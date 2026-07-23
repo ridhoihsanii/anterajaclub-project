@@ -443,8 +443,7 @@ function getMatchNumOffset(roundIdx, totalRounds) {
 function pLabel(p) {
   if (!p) return null;
   if (p.name === 'BYE') return 'BYE';
-  var hc = (p.hcCustom || p.hc || '').toString().trim();
-  return hc ? p.name + ' - ' + hc : p.name;
+  return p.name;
 }
 
 function pIsBye(p) { return p && p.name === 'BYE'; }

@@ -17,8 +17,7 @@ function getHcLabel(p) {
 
 function getParticipantLabel(p) {
   if (!p || !p.name) return '';
-  const hc = getHcLabel(p);
-  return hc ? p.name + ' - ' + hc : p.name;
+  return p.name;
 }
 
 // Returns { marginTop: number } – legacy, kept for tests

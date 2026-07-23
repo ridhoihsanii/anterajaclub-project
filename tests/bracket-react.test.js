@@ -26,8 +26,8 @@ test('getHcLabel returns empty string when both hc and hcCustom are empty', () =
 });
 
 // ── getParticipantLabel ─────────────────────────────────────────────────────
-test('getParticipantLabel formats name and HC', () => {
-  assert.equal(utils.getParticipantLabel({ name: 'Ihsan', hc: 'HC 3B', hcCustom: '' }), 'Ihsan - HC 3B');
+test('getParticipantLabel returns name only, ignoring HC/Divisi', () => {
+  assert.equal(utils.getParticipantLabel({ name: 'Ihsan', hc: 'HC 3B', hcCustom: '' }), 'Ihsan');
 });
 
 test('getParticipantLabel returns name only when no HC', () => {
