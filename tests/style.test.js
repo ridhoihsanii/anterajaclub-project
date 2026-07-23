@@ -13,11 +13,11 @@ test('style.css defines the Anteraja premium design tokens', () => {
   const source = readStyleSheet();
 
   [
-    '--anteraja-yellow: #FACC15;',
-    '--anteraja-gold: #EAB308;',
-    '--anteraja-black: #0A0A0A;',
-    '--anteraja-surface-2: #222222;',
-    '--shadow-yellow: 0 0 20px rgba(250,204,21,0.2);',
+    '--anteraja-primary: #ED0677;',
+    '--anteraja-secondary: #FFCB05;',
+    '--anteraja-charcoal: #3B2C2F;',
+    '--anteraja-surface-2: #34262A;',
+    '--shadow-brand: 0 0 20px rgba(237,6,119,0.25);',
     '--transition: all 0.25s cubic-bezier(0.4,0,0.2,1);'
   ].forEach((token) => {
     assert.match(source, new RegExp(token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
@@ -58,8 +58,8 @@ test('style.css includes required interactive and animation details', () => {
 
   [
     'backdrop-filter: blur(20px);',
-    'background: linear-gradient(135deg, var(--anteraja-yellow) 0%, var(--anteraja-gold) 100%);',
-    'box-shadow: var(--shadow-yellow);',
+    'background: linear-gradient(135deg, var(--anteraja-primary) 0%, var(--anteraja-primary-dark) 100%);',
+    'box-shadow: var(--shadow-brand);',
     'position: sticky;',
     'animation: livePulse 2s ease-in-out infinite;',
     '@keyframes fadeIn',
