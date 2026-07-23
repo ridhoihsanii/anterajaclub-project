@@ -309,7 +309,7 @@
             '</td>' +
             '<td>' +
               '<select class="table-select hc-select" data-row="' + i + '">' +
-                '<option value="">— HC —</option>' +
+                '<option value="">â€” HC â€”</option>' +
                 '<option value="HC 3B"' + (hcValue === 'HC 3B' ? ' selected' : '') + '>HC 3B</option>' +
                 '<option value="HC 3N"' + (hcValue === 'HC 3N' ? ' selected' : '') + '>HC 3N</option>' +
                 '<option value="HC 3A"' + (hcValue === 'HC 3A' ? ' selected' : '') + '>HC 3A</option>' +
