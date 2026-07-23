@@ -1,49 +1,60 @@
 :root {
-  --anteraja-yellow: #FACC15;
-  --anteraja-gold: #EAB308;
-  --anteraja-black: #0A0A0A;
-  --anteraja-dark: #111111;
-  --anteraja-surface: #1A1A1A;
-  --anteraja-surface-2: #222222;
-  --anteraja-border: rgba(250,204,21,0.15);
-  --anteraja-border-active: rgba(250,204,21,0.45);
-  --text-primary: #FFFFFF;
-  --text-secondary: #A3A3A3;
-  --text-muted: #525252;
+  /* Brand constants (from Anteraja Brand Guide, Dec 2025) */
+  --anteraja-primary: #ED0677;        /* Magenta Sigap */
+  --anteraja-primary-dark: #C10561;   /* darker magenta for gradients/hover */
+  --anteraja-secondary: #FFCB05;      /* Kuning Ramah */
+  --anteraja-pink: #F6AABF;           /* Pink Aman */
+  --anteraja-blue: #496AAA;           /* Biru Terpercaya */
+  --anteraja-maroon: #841945;         /* Maroon Amanah */
+  --anteraja-charcoal: #3B2C2F;       /* Hitam Integritas */
+
+  /* Dark-mode (default) surfaces — warm near-black derived from Hitam Integritas */
+  --anteraja-black: #1A1214;
+  --anteraja-dark: #241A1D;
+  --anteraja-surface: #2A1F22;
+  --anteraja-surface-2: #34262A;
+  --anteraja-border: rgba(237,6,119,0.18);
+  --anteraja-border-active: rgba(237,6,119,0.5);
+  --text-primary: #F5EDEF;
+  --text-secondary: #C9B8BC;
+  --text-muted: #8A7378;
   --success: #22C55E;
   --danger: #EF4444;
-  --warning: #F59E0B;
-  --info: #3B82F6;
+  --warning: #FFCB05;
+  --info: #496AAA;
   --sidebar-width: 260px;
   --header-height: 64px;
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
   --radius-xl: 20px;
+  --radius-blob: 42% 58% 55% 45% / 48% 42% 58% 52%;
   --shadow-sm: 0 2px 8px rgba(0,0,0,0.4);
   --shadow-md: 0 4px 16px rgba(0,0,0,0.5);
   --shadow-lg: 0 8px 32px rgba(0,0,0,0.6);
-  --shadow-yellow: 0 0 20px rgba(250,204,21,0.2);
+  --shadow-brand: 0 0 20px rgba(237,6,119,0.25);
   --transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
 
   /* Theme mapping used by data-theme attribute */
-  --bg: #000;
-  --bg-alt: #111111;
+  --bg: #1A1214;
+  --bg-alt: #241A1D;
   --surface: var(--anteraja-surface);
   --surface-2: var(--anteraja-surface-2);
   --text: var(--text-primary);
-  --accent: var(--anteraja-yellow);
+  --accent: var(--anteraja-primary);
 }
 
 [data-theme="light"] {
-  --bg: #f8fafc;
-  --bg-alt: #f1f5f9;
+  --bg: #FFFAFC;
+  --bg-alt: #FFF3F7;
   --surface: #ffffff;
-  --surface-2: #f8fafc;
-  --text: #0f172a;
-  --text-secondary: #475569;
-  --anteraja-border: #e2e8f0;
-  --accent: var(--anteraja-yellow);
+  --surface-2: #FFF8FB;
+  --text: var(--anteraja-charcoal);
+  --text-secondary: #6b5a5e;
+  --text-muted: #9c8a8e;
+  --anteraja-border: #f3d9e4;
+  --anteraja-border-active: rgba(237,6,119,0.4);
+  --accent: var(--anteraja-primary);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
