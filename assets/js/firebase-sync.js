@@ -65,12 +65,21 @@
     }
 
     payloadObj.updatedAt = Date.now();
+
+    // Open the tab synchronously (as a direct result of the user's click) so
+    // browsers don't treat it as an unsolicited popup. The URL is already
+    // fully known before the Firebase write, so we don't need to wait for it.
+    var previewTab = window.open(url, '_blank');
+
     db.ref('brackets/' + id).set(payloadObj, function (err) {
       if (err) {
         console.warn('[AnterajaFirebase] write error:', err);
       }
-      window.open(url, '_blank');
     });
+
+    if (!previewTab) {
+      console.warn('[AnterajaFirebase] window.open blocked by browser popup blocker.');
+    }
   }
 
   /* ── Auto-sync saat bracket disimpan (setelah preview dibuka ≥1x) ─ */
