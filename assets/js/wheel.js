@@ -92,7 +92,7 @@
         ctx.translate(cx,cy);
         ctx.rotate(start + arc/2);
         ctx.fillStyle='#fff';
-        ctx.font = Math.max(12, r*0.08) + 'px Poppins';
+        ctx.font = Math.max(12, r*0.08) + 'px Baloo 2';
         ctx.textAlign='right';
         ctx.fillText(s.label, r - 10, 6);
         ctx.restore();
