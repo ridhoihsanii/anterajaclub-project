@@ -14,10 +14,10 @@
   <script>
     firebase.initializeApp({
       apiKey:            'AIzaSyA6h6oCHrKixtZMEyqufpaZsaBrdrtBL1Y',
-      authDomain:        'anteraja-tournament.firebaseapp.com',
-      databaseURL:       'https://anteraja-tournament-default-rtdb.firebaseio.com',
-      projectId:         'anteraja-tournament',
-      storageBucket:     'anteraja-tournament.firebasestorage.app',
+      authDomain:        'bilpos-tournament.firebaseapp.com',
+      databaseURL:       'https://bilpos-tournament-default-rtdb.firebaseio.com',
+      projectId:         'bilpos-tournament',
+      storageBucket:     'bilpos-tournament.firebasestorage.app',
       messagingSenderId: '1016029844462',
       appId:             '1:1016029844462:web:159e221b47c584eed0b4ff'
     });
@@ -802,9 +802,16 @@ function initQR() {
     if (typeof window.__anterajaAutoFit === 'function') setTimeout(window.__anterajaAutoFit, 100);
   }
 
-  /* ── Mode 1: Firebase — URL pendek, real-time cross-device ── */
-  var searchParams = new URLSearchParams(window.location.search);
-  var firebaseId   = searchParams.get('id');
+  /* ── Mode 1: Firebase — URL pendek, real-time cross-device ──
+     ID disimpan di hash (#fid=...), bukan query string, karena beberapa
+     static host/dev-server melakukan redirect "clean URL" (preview.html -> preview)
+     yang membuang query string. Fragment (#) tidak pernah dikirim ke server
+     sehingga aman dari redirect tersebut. Query string ?id= tetap didukung
+     untuk backward-compat dengan link lama. */
+  var searchParams   = new URLSearchParams(window.location.search);
+  var rawHash        = window.location.hash.slice(1);
+  var hashFidMatch   = /^fid=(.+)$/.exec(rawHash);
+  var firebaseId     = searchParams.get('id') || (hashFidMatch && decodeURIComponent(hashFidMatch[1]));
 
   if (firebaseId) {
     if (typeof firebase !== 'undefined') {

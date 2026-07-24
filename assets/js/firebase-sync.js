@@ -26,12 +26,17 @@
     return id;
   }
 
-  /* ── URL preview pendek ─────────────────────────────────────────── */
+  /* ── URL preview pendek ─────────────────────────────────────────────
+     ID diletakkan di hash (#fid=...) bukan query string (?id=...) karena
+     sejumlah static host/dev-server melakukan redirect "clean URL"
+     (preview.html -> preview) yang membuang query string, sehingga id
+     Firebase hilang dan bracket gagal dimuat. Hash tidak pernah dikirim
+     ke server sehingga aman dari redirect tersebut. ────────────────── */
   function getPreviewUrl(id) {
     var href = window.location.href;
     var base = href.split('?')[0].split('#')[0];
     base = base.replace(/index\.html$/, '').replace(/\/+$/, '');
-    return base + '/preview.html?id=' + id;
+    return base + '/preview.html#fid=' + encodeURIComponent(id);
   }
 
   /* ── Inisialisasi Firebase (idempotent) ─────────────────────────── */
