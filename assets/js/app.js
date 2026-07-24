@@ -540,8 +540,8 @@
             tournament:   tournament
           };
 
-          if (window.AnterajaFirebase) {
-            AnterajaFirebase.openPreview(payloadObj);
+          if (window.BilposFirebase) {
+            BilposFirebase.openPreview(payloadObj);
           } else {
             // Fallback: hash-based URL
             var compressed = window.LZString
